@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+ </head>
+ <body>
+  <ul>
+	<li>1. Install a PHP enabled webserver - XAMP,WAMP etc...</li>
+	<li>2. Download the pos printing server <a href="http://www.ultimatekode.com/pos_printer.zip">http://www.ultimatekode.com/pos_printer.zip</a></li>
+	<li>3. Extract downloaded file to <strong>yourlocalserver</strong>/pos_printer</li>
+	<li>4. Open GeoApp> Printers> Add Printer - <p>Printer Name -Any Name<br>Printer Type= Easy REST Based Print Server<br>Printer Connector =  yourlocalserver/pos_printer <br><u>For advanced  design please use Printer Connector =  yourlocalserver/pos_printer/advanced.php</u></p></li>
+	<li>4. Open <strong>yourlocalserver</strong>/pos_printer/config.php</li>
+<br><hr><br>
+	<li>5. Check config.php line no 27 , enter your app url</li>
+	<code>$config['app_url'] = 'http://youdomain.com/yourfolder/';</code><br><hr><br>
+	<li>6. Check config.php <strong>line no 35</strong> , enter your rest key. <br>You can generate key in GeoPOS>Left Side Menu<br>Settings> REST API</li>
+	<code>$config['rest_key'] = 'YOURKEY_HERE';</code><br><hr><br>
+	<li>7. Check config.php <strong>line no 50</strong> , enter your printer connection type. <br>For FilePrintConnector =  'file'<br>
+NetworkPrintConnector = 'network'<br>
+WindowsPrintConnector (USB) = 'windows'<br>
+DummyPrintConnector = 'test'<br><strong>Please enter one value, example for windows 'windows'</strong></li>
+	<code>$config['printer_connection'] = 'test';</code>
+	<br><hr><br>
+	<li>8. <strong>Note:</strong> If you have entered $config['printer_connection'] = 'file'; in step 7 than please edit line no 64 . Enter your value for <pre>$config['print_file'] = '/dev/usb/lp0';</pre><br><br><strong>Note:</strong> If you have entered $config['printer_connection'] = 'network'; in step 7 than please edit line no 67 . Enter your value for <pre>$config['print_network'] = array("10.x.x.x", 9100);</pre><br><br><strong>Note:</strong> If you have entered $config['printer_connection'] = 'windows'; in step 7 than please edit line no 70 . Enter your value for <pre>$config['print_windows'] = 'LPT1';</pre><br>
+						<h3>Compatibility</h3>
+
+<table class="tbl" cellpadding='5'>
+<tbody><tr>
+<th>&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Linux&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Mac&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>Windows&nbsp;&nbsp;</th>
+</tr>
+<tr>
+<th>Ethernet&nbsp;&nbsp;&nbsp;</th>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/ethernet.php">Yes</a></td>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/ethernet.php">Yes</a></td>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/ethernet.php">Yes</a></td>
+</tr>
+<tr>
+<th>USB</th>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/linux-usb.php">Yes</a></td>
+<td>Not tested</td>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/windows-usb.php">Yes</a></td>
+</tr>
+<tr>
+<th>USB-serial</th>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<th>Serial</th>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<th>Parallel</th>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/windows-lpt.php">Yes</a></td>
+<td>Not tested</td>
+<td>Yes</td>
+</tr>
+<tr>
+<th>SMB shared</th>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/smb.php">Yes</a></td>
+<td>No</td>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/smb.php">Yes</a></td>
+</tr>
+<tr>
+<th>CUPS hosted</th>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/cups.php">Yes</a></td>
+<td><a href="https://github.com/mike42/escpos-php/tree/master/example/interface/cups.php">Yes</a></td>
+<td>No</td>
+</tr>
+</tbody></table>
+<ul>
+<h3>Supported Printers</h3>
+<li>3nStrat POS-08</li>
+<li>AURES ODP-333</li>
+<li>AURES ODP-500</li>
+<li>Bematech-4200-TH</li>
+<li>Bematech LR2000E</li>
+<li>Bixolon SRP-350III</li>
+<li>Black Copper BC-85AC</li>
+<li>Citizen CBM1000-II</li>
+<li>Citizen CT-S310II</li>
+<li>Dapper-Geyi Q583P</li>
+<li>Daruma DR800</li>
+<li>DR-MP200 (manufacturer unknown)</li>
+<li>EPOS TEP 220M</li>
+<li>Epson EU-T332C</li>
+<li>Epson FX-890 (requires <code>feedForm()</code> to release paper).</li>
+<li>Epson TM-T20</li>
+<li>Epson TM-T20II</li>
+<li>Epson TM-T70</li>
+<li>Epson TM-T70II</li>
+<li>Epson TM-T81</li>
+<li>Epson TM-T82II</li>
+<li>Epson TM-T88II</li>
+<li>Epson TM-T88III</li>
+<li>Epson TM-T88IV</li>
+<li>Epson TM-T88V</li>
+<li>Epson TM-U220</li>
+<li>Epson TM-U295 (requires <code>release()</code> to release slip).</li>
+<li>Epson TM-U590 and TM-U590P</li>
+<li>Equal (EQ-IT-001) POS-58</li>
+<li>Excelvan HOP-E200</li>
+<li>Excelvan HOP-E58</li>
+<li>Excelvan HOP-E801</li>
+<li>Excelvan ZJ-8220</li>
+<li>Gainscha GP-5890x (Also marketed as EC Line 5890x)</li>
+<li>Gainscha GP-U80300I (Also marketed as gprinter GP-U80300I)</li>
+<li>gprinter GP-U80160I</li>
+<li>Hasar HTP 250</li>
+<li>Metapace T-1</li>
+<li>Metapace T-25</li>
+<li>Nexa PX700</li>
+<li>Nyear NP100</li>
+<li>Okipos 80 Plus III</li>
+<li>Orient BTP-R580</li>
+<li>Partner Tech RP320</li>
+<li>P-822D</li>
+<li>P85A-401 (make unknown)</li>
+<li>Rongta RP326US</li>
+<li>Rongta RP58-U</li>
+<li>Senor TP-100</li>
+<li>SEYPOS PRP-300 (Also marketed as TYSSO PRP-300)</li>
+<li>Sicar POS-80</li>
+<li>Silicon SP-201 / RP80USE</li>
+<li>SPRT SP-POS88V</li>
+<li>Star BSC10</li>
+<li>Star TSP100 ECO</li>
+<li>Star TSP100III FuturePRNT</li>
+<li>Star TSP-650</li>
+<li>Star TUP-592</li>
+<li>Venus V248T</li>
+<li>Xprinter F-900</li>
+<li>Xprinter XP-365B</li>
+<li>Xprinter XP-58 Series</li>
+<li>Xprinter XP-80C</li>
+<li>Xprinter XP-90</li>
+<li>XPrinter XP-Q20011</li>
+<li>Xprinter XP-Q800</li>
+<li>Zjiang NT-58H</li>
+<li>Zjiang ZJ-5870</li>
+<li>Zjiang ZJ-5890K</li>
+<li>Zjiang ZJ-5890T (Marketed as POS 5890T)</li>
+<li>Zjiang ZJ-8220</li>
+</ul>
+						
+
+
+
+                <hr>
+ </body>
+</html>

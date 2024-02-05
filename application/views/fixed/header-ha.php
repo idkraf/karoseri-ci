@@ -1,0 +1,1200 @@
+<link rel="stylesheet" type="text/css" href="<?= assets_url() ?>app-assets/<?= LTR ?>/core/menu/menu-types/horizontal-menu.css">
+</head>
+<body class="horizontal-layout horizontal-menu 2-columns menu-expanded" data-open="click" data-menu="horizontal-menu"
+      data-col="2-columns">
+    <span id="hdata" data-df="<?php echo $this->config->item('dformat2'); ?>" data-curr="<?php echo currency($this->aauth->get_user()->loc); ?>"></span>
+    <!-- fixed-top-->
+    <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-static-top navbar-dark bg-dark bg-gradient">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="<?= base_url() ?>dashboard/">
+                <img  class="brand-logo" alt="logo" src="<?php echo base_url(); ?>userfiles/theme/logo-header.png">
+            </a>
+            <div class="navbar-container content">
+                <div class="collapse navbar-collapse" id="navbar-mobile">
+                    <ul class="nav navbar-nav mr-auto float-start">
+                        <li class="dropdown  nav-item">
+                            <a class="nav-link nav-link-label" href="#" data-toggle="dropdown">
+                                <i class="ficon ft-map-pin success"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-left">
+                                <li class="dropdown-menu-header">
+                                    <h6 class="dropdown-header m-0">
+                                        <span class="grey darken-2">
+                                            <img src="<?php echo base_url("assets/images/location.png"); ?>"><strong><?php echo $this->lang->line('business_location') ?></strong>
+                                        </span>
+                                    </h6>
+                                </li>
+
+                                <li class="dropdown-menu-footer text-center">
+                                    <button class="btn btn-primary rounded-0 mt-2" style="width: 100%"> 
+                                        <?php
+                                        $loc = location($this->aauth->get_user()->loc);
+                                        echo $loc['cname'];
+                                        ?>
+                                    </button>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item d-none d-md-block nav-link ">
+                            <a href="<?= base_url() ?>pos_invoices/create" class="btn btn-danger" title="Access POS">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-handbag"></i><?php echo $this->lang->line('POS') ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown dropdown-notification nav-item">
+                            <a class="nav-link nav-link-label" href="#" data-toggle="dropdown">
+                                <i  class="ficon ft-bell"></i>
+                                <span class="badge badge-pill  badge-danger badge-default badge-up" id="taskcount">0</span></a>
+                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right float-end">
+                                <li class="dropdown-menu-header">
+                                    <h6 class="dropdown-header m-0">
+                                        <span class="grey darken-2"><img src="<?php echo base_url("assets/images/task.png"); ?>"> <?php echo $this->lang->line('Pending Tasks') ?></span>
+                                        <span class="notification-tag badge badge-default badge-danger float-right m-0"><?= $this->lang->line('New') ?></span>
+                                    </h6>
+                                </li>
+                                <li class="scrollable-container media-list" id="tasklist"></li>
+                                <li class="dropdown-menu-footer">
+                                    <a class="dropdown-item text-muted text-center" href="<?php echo base_url('manager/todo') ?>"><?php echo $this->lang->line('Manage tasks') ?></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown dropdown-notification nav-item">
+                            <a class="nav-link nav-link-label" href="#" data-toggle="dropdown">
+                                <i class="ficon ft-mail"></i>
+                                <span class="badge badge-pill badge-default badge-info badge-default badge-up"><?php echo $this->aauth->count_unread_pms() ?></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
+                                <li class="dropdown-menu-header">
+                                    <h6 class="dropdown-header m-0">
+                                        <span class="grey darken-2"><img src="<?php echo base_url("assets/images/msg.png"); ?>"><?php echo $this->lang->line('Messages') ?></span>
+                                        <span class="notification-tag badge badge-default badge-warning float-right m-0"><?php echo $this->aauth->count_unread_pms() ?><?php echo $this->lang->line('new') ?></span>
+                                    </h6>
+                                </li>
+                                <li class="scrollable-container media-list">
+                                    <?php
+                                    $list_pm = $this->aauth->list_pms(6, 0, $this->aauth->get_user()->id, false);
+
+                                    foreach ($list_pm as $row) {
+                                        echo '<a href="' . base_url('messages/view?id=' . $row->pid) . '">
+                                        <div class="media">
+                                            <div class="media-left"><span class="avatar avatar-sm  rounded-circle"><img src="' . base_url('userfiles/employee/' . $row->picture) . '" alt="avatar"><i></i></span></div>
+                                            <div class="media-body">
+                                            <h6 class="media-heading">' . $row->name . '</h6>
+                                            <p class="notification-text font-small-3 text-muted">' . $row->{'title'} . '</p><small>
+                                                <time class="media-meta text-muted" datetime="' . $row->{'date_sent'} . '">' . $row->{'date_sent'} . '</time></small>
+                                            </div>
+                                        </div></a>';
+                                    }
+                                    ?>    
+                                </li>
+                                <li class="dropdown-menu-footer">
+                                    <a class="dropdown-item text-muted text-center" href="<?php echo base_url('messages') ?>"><?php echo $this->lang->line('Read all messages') ?></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php if ($this->aauth->auto_attend()) { ?>
+                            <li class="dropdown dropdown-d nav-item">
+                                <?php
+                                if ($this->aauth->clock()) {
+
+                                    echo ' <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon spinner icon-clock"></i><span class="badge badge-pill badge-default badge-success badge-default badge-up">' . $this->lang->line('On') . '</span></a>';
+                                } else {
+                                    echo ' <a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon icon-clock"></i><span class="badge badge-pill badge-default badge-warning badge-default badge-up">' . $this->lang->line('Off') . '</span></a>';
+                                }
+                                ?>
+
+                                <ul class="dropdown-menu dropdown-menu-right border-primary border-lighten-3 text-center">
+                                    <img src="<?php echo base_url("assets/images/clock.png"); ?>">
+                                    <?php
+                                    echo '<span class="p-1 text-dark"><strong>' . $this->lang->line('Attendance') . ':</strong></span>';
+                                    if (!$this->aauth->clock()) {
+                                        echo '<a href="' . base_url() . '/dashboard/clock_in" class="btn btn-outline-success  btn-outline-white btn-md ml-1 mr-1" ><span class="icon-toggle-on" aria-hidden="true"></span> ' . $this->lang->line('ClockIn') . ' <i
+                                    class="ficon icon-clock spinner"></i></a>';
+                                    } else {
+                                        echo '<a href="' . base_url() . '/dashboard/clock_out" class="btn btn-outline-danger  btn-outline-white btn-md ml-1 mr-1" ><span class="icon-toggle-off" aria-hidden="true"></span> ' . $this->lang->line('ClockOut') . ' </a>';
+                                    }
+                                    ?>
+
+                                    <br><br>
+                                </ul>
+                            </li>
+                        <?php } ?>
+                        <li class="dropdown dropdown-user nav-item">
+                            <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                                <span  class="avatar avatar-online">
+                                    <img  src="<?php echo base_url('userfiles/employee/thumbnail/' . $this->aauth->get_user()->picture) ?>" alt="avatar">
+
+                                </span>
+                                <span
+                                    class="user-name"><?php echo $this->lang->line('Account') ?></span></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item align-items-center" href="<?php echo base_url(); ?>user/profile">
+                                    <img src="<?php echo base_url("assets/images/profile.png"); ?>"> <span><?php echo $this->lang->line('Profile') ?></span>
+                                </a>
+                                <a href="<?php echo base_url(); ?>user/attendance" class="dropdown-item">
+                                    <img src="<?php echo base_url("assets/images/attend.png"); ?>"> <span><?php echo $this->lang->line('Attendance') ?></span></a>
+                                <a href="<?php echo base_url(); ?>user/holidays" class="dropdown-item">
+                                    <img src="<?php echo base_url("assets/images/holiday.png"); ?>"> <span><?php echo $this->lang->line('Holidays') ?></span></a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="<?php echo base_url('user/logout'); ?>">
+                                    <img src="<?php echo base_url("assets/images/logout.png"); ?>"> <span><?php echo $this->lang->line('Logout') ?></span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Horizontal navigation bar-->
+    <div class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-fixed navbar-light navbar-without-dd-arrow navbar-shadow menu-border"
+         role="navigation" data-menu="menu-wrapper">
+        <!-- Horizontal menu content-->
+        <div class="navbar-container main-menu-content text-center" data-menu="menu-container">
+            <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation">
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url(); ?>dashboard/">
+                        <div class="card border border-1" style="width:76px;">
+                            <div class="card-body p-2">
+                                <img src="<?php echo base_url("assets/images/dashboard.png"); ?>">
+                            </div>
+
+                        </div>
+                        <p class="fw-bold"><?= $this->lang->line('Dashboard') ?></p>
+                    </a>
+                </li>
+                
+                <?php if ($this->aauth->premission(4)) {
+                    ?>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/crm.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Operation</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation');?>/purchase">
+                                    1. Purchase
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/purchasepayment">
+                                    2. Purchase Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/stockin">
+                                    3. Stock In
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/return">
+                                    4. Return
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/project">
+                                    5. Project
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/projectpayment">
+                                    6. Project Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/stockout">
+                                    7. Stock Out
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/staff">
+                                    8. Staff
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/cashbond">
+                                    9. Cashbond
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/cashbondpayment">
+                                    10. Cashbond Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('operation'); ?>/opname">
+                                    11. Opname
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/accounts.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Accounting</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting');?>/account">
+                                    1. Account
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/jurnal">
+                                    2. Journal
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/profitloss">
+                                    3. Profit/Loss
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/balancesheet">
+                                    4. Balance Sheet
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/soppurchase">
+                                    5. Purchase
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/sopproject">
+                                    6. Project
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/sopopname">
+                                    7. Opname
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('accounting'); ?>/sopcashbond">
+                                    8. Cashbond
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/sales.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Finance</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance');?>/purchase">
+                                    1. Purchase
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/purchasepayment">
+                                    2. Purchase Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/project">
+                                    3. Project
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/payment">
+                                    4. Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/staff">
+                                    5. Staff
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/projectstaffpayment">
+                                    6. Payment
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/receive">
+                                    7. Receive
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/cost">
+                                    8. Cost
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/cashbond">
+                                    9. Cashbond
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('finance'); ?>/cashbondpayment">
+                                    10. Cashbond Payment
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/miss.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Purchase</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('productcategory');?>">
+                                    1. Category
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('units'); ?>">
+                                    2. Units
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('products'); ?>">
+                                    3. Item
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('supplier'); ?>">
+                                    4. Suplier
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('productcategory'); ?>/warehouse">
+                                    5. Warehouse
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('purchase'); ?>">
+                                    6. Purchase
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/stock.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Warehouse</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse');?>/purchase">
+                                    1. Purchase
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse');?>/stockin">
+                                    2. Stock In
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse');?>/receive">
+                                    3. Receive
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/return">
+                                    4. Return Supplier
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/project">
+                                    5. Project
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/stockout">
+                                    6. Stock Out
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/item">
+                                    7. Item
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/opname">
+                                    8. Opname
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/stock">
+                                    9. Stock
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('warehouse'); ?>/history">
+                                    10. History
+                                </a>
+                            </li>
+                            
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('products'); ?>/stock_transfer">
+                                    11. Stock Transfer
+                                </a>
+                            </li>
+                            <!--li data-menu="">
+                                <a class="dropdown-item" href="<//?php echo base_url('stockreturn'); ?>/customer">
+                                    5. Return From Customer
+                                </a>
+                            </li-->
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/hrm.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Admin</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('employee');?>">
+                                    1. Staff
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('job'); ?>">
+                                    2. Job
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('products'); ?>">
+                                    3. Item
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('template'); ?>">
+                                    4. Template
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/project.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold">Marketing</p>
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('customers');?>">
+                                    1. Customer
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('vehicle'); ?>">
+                                    2. Vehicle
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('products'); ?>">
+                                    3. Item
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-1">
+                                <a class="dropdown-item" href="<?php echo base_url('template'); ?>">
+                                    4. Template
+                                </a>
+                            </li>
+                            <li data-menu="" class="mt-3">
+                                <a class="dropdown-item" href="<?php echo base_url('produksi'); ?>">
+                                    5. Project
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <?php
+                }
+                if ($this->aauth->premission(1)) { ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+
+                            <p class="fw-bold"><?php echo $this->lang->line('sales') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                                <a  class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i class="icon-paper-plane"></i><?php echo $this->lang->line('pos sales') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?= base_url(); ?>pos_invoices/create" data-toggle="dropdown"><?php echo $this->lang->line('New Invoice'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>pos_invoices/create?v2=true"
+                                                        data-toggle="dropdown"><?= $this->lang->line('New Invoice'); ?>
+                                            V2 - Mobile</a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>pos_invoices"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Manage Invoices'); ?></a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i class="icon-basket"></i><?php echo $this->lang->line('sales') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>invoices/create"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('New Invoice'); ?></a>
+                                    </li>
+
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>invoices"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Manage Invoices'); ?></a>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                                <a  class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i  class="icon-call-out"></i><?php echo $this->lang->line('Quotes') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?= base_url(); ?>quote/create" data-toggle="dropdown"><?php echo $this->lang->line('New Quote'); ?></a>
+                                    </li>
+
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?php echo base_url(); ?>quote" data-toggle="dropdown"><?php echo $this->lang->line('Manage Quotes'); ?></a>
+                                    </li>    
+                                </ul>
+                            </li>
+
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="ft-radio"></i><?php echo $this->lang->line('Subscriptions') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>subscriptions/create"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('New Subscription'); ?></a>
+                                    </li>
+
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>subscriptions"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Subscriptions'); ?></a>
+                                </ul>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>stockreturn/creditnotes"><i
+                                        class="icon-screen-tablet"></i><?php echo $this->lang->line('Credit Notes'); ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </li-->
+                    <?php
+                }
+                if ($this->aauth->premission(2)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('Stock') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                                <a  class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i class="ft-list"></i> <?php echo $this->lang->line('Items Manager') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?= base_url(); ?>products/add" data-toggle="dropdown"> <?php echo $this->lang->line('New Product'); ?></a>
+                                    </li>
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?php echo base_url(); ?>products" data-toggle="dropdown"><?= $this->lang->line('Manage Products'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>productcategory" data-toggle="dropdown">
+                                    <i class="ft-umbrella"></i><?php echo $this->lang->line('Product Categories'); ?>
+                                </a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>productcategory/warehouse" data-toggle="dropdown">
+                                    <i class="ft-sliders"></i><?php echo $this->lang->line('Warehouses'); ?>
+                                </a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>products/stock_transfer" data-toggle="dropdown">
+                                    <i class="ft-wind"></i><?php echo $this->lang->line('Stock Transfer'); ?>
+                                </a>
+                            </li>
+
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                                <a  class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i class="icon-handbag"></i> <?php echo $this->lang->line('Purchase Order') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?= base_url(); ?>purchase/create" data-toggle="dropdown"> <?php echo $this->lang->line('New Order'); ?></a>
+                                    </li>
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?php echo base_url(); ?>purchase" data-toggle="dropdown"><?= $this->lang->line('Manage Orders'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-puzzle"></i> <?php echo $this->lang->line('Stock Return') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>stockreturn"
+                                                        data-toggle="dropdown"> <?php echo $this->lang->line('SuppliersRecords'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>stockreturn/customer"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('CustomersRecords'); ?></a>
+                                    </li>
+
+
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="ft-target"></i><?php echo $this->lang->line('Suppliers') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>supplier/create"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('New Supplier'); ?></a>
+                                    </li>
+
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>supplier"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Manage Suppliers'); ?></a>
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="fa fa-barcode"></i><?php echo $this->lang->line('ProductsLabel'); ?></a>
+                                <ul class="dropdown-menu">
+
+
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>products/custom_label"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('custom_label'); ?></a></li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>products/standard_label"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('standard_label'); ?></a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+                if ($this->aauth->premission(3)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;"> 
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('CRM') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="ft-users"></i><?php echo $this->lang->line('Clients') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>customers/create"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('New Client') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>customers"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Manage Clients'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>clientgroup"><i
+                                        class="icon-grid"></i><?php echo $this->lang->line('Client Groups'); ?></a>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="fa fa-ticket"></i><?php echo $this->lang->line('Support Tickets') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>tickets/?filter=unsolved"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('UnSolved') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>tickets"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Manage Tickets'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+
+
+                if (!$this->aauth->premission(4) && $this->aauth->premission(7)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <i class="icon-briefcase"></i><p class="fw-bold"><?php echo $this->lang->line('Project') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>manager/projects"><i
+                                        class="icon-calendar"></i><?php echo $this->lang->line('Manage Projects'); ?>
+                                </a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>manager/todo"><i
+                                        class="icon-list"></i><?php echo $this->lang->line('To Do List'); ?></a>
+                            </li>
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+                if ($this->aauth->premission(5)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#"  data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?= $this->lang->line('Accounts') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-book-open"></i><?php echo $this->lang->line('Accounts') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu="">
+                                        <a class="dropdown-item" href="<?php echo base_url(); ?>accounts"
+                                           data-toggle="dropdown"><?php echo $this->lang->line('Manage Accounts') ?></a>
+                                    </li>
+                                    <li data-menu="">
+                                        <a class="dropdown-item"
+                                           href="<?php echo base_url(); ?>accounts/balancesheet"
+                                           data-toggle="dropdown"><?= $this->lang->line('BalanceSheet'); ?></a>
+                                    </li>
+                                    <li data-menu="">
+                                        <a class="dropdown-item"
+                                           href="<?php echo base_url(); ?>reports/accountstatement"
+                                           data-toggle="dropdown"><?= $this->lang->line('Account Statements'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-wallet"></i><?php echo $this->lang->line('Transactions') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>transactions"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('View Transactions') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>transactions/add"
+                                                        data-toggle="dropdown"><?= $this->lang->line('New Transaction'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>transactions/transfer"
+                                                        data-toggle="dropdown"><?= $this->lang->line('New Transfer'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>transactions/income"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Income'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>transactions/expense"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Expense'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>customers"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Clients Transactions'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li data-menu=""><a class="dropdown-item"
+                                                href="<?php echo base_url(); ?>transactions/income"
+                                                data-toggle="dropdown"><i class="fa fa-money"></i><?= $this->lang->line('Income'); ?></a>
+                            </li>
+                            <li data-menu=""><a class="dropdown-item"
+                                                href="<?php echo base_url(); ?>transactions/expense"
+                                                data-toggle="dropdown"><i class="ft-external-link"></i><?= $this->lang->line('Expense'); ?></a>
+                            </li>
+                        </ul>
+                    </li-->
+
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/promocode.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('Promo') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-trophy"></i><?php echo $this->lang->line('Coupons') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>promo/create"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('New Promo') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>promo"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Manage Promo'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+
+
+                        </ul>
+                    </li-->
+
+                    <?php
+                }
+                if ($this->aauth->premission(10)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('Reports') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>register"><i
+                                        class="icon-eyeglasses"></i><?php echo $this->lang->line('Business Registers'); ?>
+                                </a>
+                            </li>
+
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-doc"></i><?php echo $this->lang->line('Statements') ?></a>
+                                <ul class="dropdown-menu">
+
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/accountstatement"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Account Statements'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/customerstatement"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Customer_Account_Statements') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/supplierstatement"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Supplier_Account_Statements') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/taxstatement"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('TAX_Statements'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>pos_invoices/extended"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('ProductSales'); ?></a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-bar-chart"></i><?php echo $this->lang->line('Graphical Reports') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>chart/product_cat"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Product Categories'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>chart/trending_products"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Trending Products'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>chart/profit"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Profit'); ?></a>
+                                    </li>
+
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>chart/topcustomers"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Top_Customers') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>chart/incvsexp"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('income_vs_expenses') ?></a>
+                                    </li>
+
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>chart/income"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Income'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>chart/expenses"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Expenses'); ?></a>
+
+
+                                </ul>
+                            </li>
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="icon-bulb"></i><?php echo $this->lang->line('Summary_Report') ?>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/statistics"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Statistics') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/profitstatement"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Profit'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/incomestatement"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Calculate Income'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/expensestatement"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Calculate Expenses') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>reports/sales"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Sales') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>reports/products"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Products') ?></a>
+                                    </li>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item"
+                                                href="<?php echo base_url(); ?>reports/commission"
+                                                data-toggle="dropdown"><?= $this->lang->line('Employee_Commission'); ?></a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+                </li-->
+                <?php
+                }
+                if ($this->aauth->premission(6)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('Miscellaneous') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>tools/notes"><i
+                                        class="icon-note"></i><?php echo $this->lang->line('Notes'); ?></a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>events"><i
+                                        class="icon-calendar"></i><?php echo $this->lang->line('Calendar'); ?></a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>tools/documents"><i
+                                        class="icon-doc"></i><?php echo $this->lang->line('Documents'); ?></a>
+                            </li>
+
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+                if ($this->aauth->premission(9)) {
+                    ?>
+                    <!--li class="dropdown nav-item" data-menu="dropdown">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('HRM') ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="ft-users"></i><?php echo $this->lang->line('Employees') ?></a>
+                                <ul class="dropdown-menu">
+                                    <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>employee"
+                                                        data-toggle="dropdown"><?php echo $this->lang->line('Employees') ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>employee/permissions"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Permissions'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>employee/salaries"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Salaries'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>employee/attendances"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Attendance'); ?></a>
+                                    </li>
+                                    <li data-menu=""><a class="dropdown-item"
+                                                        href="<?php echo base_url(); ?>employee/holidays"
+                                                        data-toggle="dropdown"><?= $this->lang->line('Holidays'); ?></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>employee/departments"><i
+                                        class="icon-folder"></i><?php echo $this->lang->line('Departments'); ?></a>
+                            </li>
+                            <li data-menu="">
+                                <a class="dropdown-item" href="<?php echo base_url(); ?>employee/payroll"><i
+                                        class="icon-notebook"></i><?php echo $this->lang->line('Payroll'); ?></a>
+                            </li>
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+                if ($this->aauth->get_user()->roleid > 4) {
+                    ?>
+                    <!--li class="dropdown mega-dropdown nav-item" data-menu="megamenu">
+                        <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/reports.png"); ?>">
+                                </div>
+                            </div>
+                            <p class="fw-bold"><?php echo $this->lang->line('Export'); ?></p>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <ul class="drilldown-menu">
+                                    <li class="menu-list">
+                                        <ul class="mega-menu-sub">
+                                            <li><a class="dropdown-item" href="<?php echo base_url(); ?>export/crm"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Export People Data'); ?>
+                                                </a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                href="<?php echo base_url(); ?>export/transactions"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Export Transactions'); ?>
+                                                </a></li>
+                                            <li><a class="dropdown-item" href="<?php echo base_url(); ?>export/products"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Export Products'); ?>
+                                                </a></li>
+                                            <li>
+                                                <a class="dropdown-item" href="<?php echo base_url(); ?>export/account"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Account Statements'); ?>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                href="<?php echo base_url(); ?>export/taxstatement"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Tax_Export'); ?>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="<?php echo base_url(); ?>export/dbexport"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Database Backup'); ?>
+                                                </a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="<?php echo base_url(); ?>import/products"><i
+                                                        class="fa fa-caret-right"></i></i><?php echo $this->lang->line('Import Products'); ?>
+                                                </a></li>
+                                            <li><a class="dropdown-item" href="<?php echo base_url(); ?>import/customers"><i
+                                                        class="fa fa-caret-right"></i><?php echo $this->lang->line('Import Customers'); ?>
+                                                </a></li>
+                                            <li><a  class="dropdown-item" href="<?php echo base_url(); ?>export/people_products"><i
+                                                        class="fa fa-caret-right"></i> <?php echo $this->lang->line('ProductsAccount Statements'); ?>
+                                                </a></li>
+
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li-->
+                    <?php
+                }
+
+                if ($this->aauth->get_user()->roleid == 5) {
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url("app/setting"); ?>">
+                            <div class="card border border-1" style="width:76px;">
+                                <div class="card-body p-2">
+                                    <img src="<?php echo base_url("assets/images/settings.png"); ?>">
+                                </div>
+
+                            </div>
+                            <p class="fw-bold"><?= $this->lang->line('Settings') ?></p>
+                        </a>
+                    </li>
+
+                    <?php
+                }
+                ?>
+            </ul>
+        </div>
+        <!-- /horizontal menu content-->
+    </div>
+    <!-- Horizontal navigation-->
+    <div id="c_body"></div>
+    <div class="app-content content">
+        <div class="container-fluid">
+            <div class="card-body">
