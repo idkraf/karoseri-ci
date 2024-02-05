@@ -7,6 +7,8 @@ class Purchase extends CI_Controller {
         parent::__construct();
         $this->load->model('purchases_model', 'purchases');
         $this->load->model('purchase_model');
+        $this->load->model('products_model', 'products');
+        $this->load->model('supplier_model', 'supplier');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
@@ -42,6 +44,7 @@ class Purchase extends CI_Controller {
         $this->load->view('fixed/footer');
 
     }
+
     public function ajax_list(){
 
         $min = $this->input->get('min');
@@ -94,6 +97,71 @@ class Purchase extends CI_Controller {
             "rows" => $this->purchase_model->count_filtered(),
             "data" => $data,
             'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+
+    public function supplier_list() {
+
+        $list = $this->supplier->get_datatables();
+        $data = array();
+        $no = $this->input->post('start');
+        foreach ($list as $prd) {
+            $row = array();
+            $row[] = $prd->id;
+            $row[] = $prd->name;
+            $row[] = $prd->address;
+            $row[] = $prd->city;
+            $row[] = $prd->phone;
+            $row[] = '<a href="#" 
+            data-s-id="' . $prd->id . '" 
+            data-s-name="' . $prd->name . '" 
+            data-s-address="' . $prd->address . '" 
+            data-s-city="' . $prd->city . '" 
+            data-s-phone="' . $prd->phone . '" 
+            class="btn btn-success btn-sm pilih-supplier"
+            data-toggle="modal" data-target="#dataSupplier" data-dismiss="modal">
+            <span class="icon-share-alt"></span></a>';
+            $data[] = $row;
+        }
+        $output = array(
+            "draw" => $this->input->post('draw'),
+            "recordsTotal" => $this->supplier->count_all(),
+            "recordsFiltered" => $this->supplier->count_filtered(),
+            "data" => $data,
+        );
+
+        echo json_encode($output);
+    }
+    public function product_list() {
+        $list = $this->products->get_datatables();
+        $data = array();
+        $no = $this->input->post('start');
+        foreach ($list as $prd) {
+            $row = array();
+            $row[] = $prd->product_code;
+            $row[] = $prd->c_title;
+            $row[] = $prd->product_name;
+            $row[] = 'IDR '.number_format($prd->fproduct_price, 4, ".", ".");
+            $row[] = '<a href="#" 
+            data-object-id="' . $prd->pid . '" 
+            data-object-code="' . $prd->product_code . '" 
+            data-object-nama="' . $prd->product_name . '" 
+            data-object-pricebig="' . $prd->fproduct_price . '" 
+            data-object-disc="' . $prd->disrate . '" 
+            data-object-tax="' . $prd->taxrate . '" 
+            data-object-qty="' . $prd->qty . '" 
+            class="btn btn-success btn-sm pilih-produk"
+            data-toggle="modal" data-target="#dataProduk" data-dismiss="modal">
+            <span class="icon-share-alt"></span></a>';
+            $data[] = $row;
+        }
+        $output = array(
+            "draw" => $this->input->post('draw'),
+            "recordsTotal" => $this->products->count_all('', '', ''),
+            "recordsFiltered" => $this->products->count_filtered('', '', ''),
+            "data" => $data,
         );
 
         echo json_encode($output);

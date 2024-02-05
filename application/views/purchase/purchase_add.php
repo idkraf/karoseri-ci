@@ -35,7 +35,7 @@
                                     <input onkeyup="searchSupplier(); return false;" type="text" class="form-control" id="txt_supplier_code">
                                     <span class="input-group-append">
                                         <button type="button" onclick="showSupplier(); return false;" class="btn bg-gray btn-flat"
-                                        style="background-color:#6c757d;color:#fff" data-toggle="modal" data-target="#box_supplier_modal">...</button>
+                                        style="background-color:#6c757d;color:#fff" data-toggle="modal" data-target="#dataSupplier">...</button>
                                     </span>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
                                         <span class="input-group-append">
                                             <button type="button" onclick="showItem(); return false;" class="btn bg-gray btn-flat"
                                             style="background-color:#6c757d;color:#fff" 
-                                            data-toggle="modal" data-target="#box_modal">...</button>
+                                            data-toggle="modal" data-target="#dataProduk">...</button>
                                         </span>
                                     </div>
                                 </div>
@@ -230,7 +230,141 @@
     </div>
 </div>
 
+<div class="modal fade" id="dataSupplier" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title">Cari Data Supplier</h4>
+			</div>
+			<div class="modal-body">
+				<div id="div_student">
+					<div class="box-body table-responsive">
+						<table id="supply" class="table table-hover no-footer">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Name</th>
+									<th>Address</th>
+									<th>City</th>
+									<th>Telp</th>
+									<th></th>
+								</tr>	
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="dataProduk" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">×</button>
+				<h4 class="modal-title">Cari Data Item</h4>
+			</div>
+			<div class="modal-body">
+				<div id="div_student">
+					<div class="box-body table-responsive">
+						<table id="produk" class="table table-hover no-footer">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Category</th>
+									<th>Name</th>
+									<th>Purchase</th>
+									<th></th>
+								</tr>	
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
+    
+    $(document).on('click', ".pilih-produk", function (e) {        
+        $('#txt_item_id').val($(this).attr('data-object-pid'));
+        $('#txt_item_code').val($(this).attr('data-object-code'));
+        $('#txt_item_name').val($(this).attr('data-object-nama'));
+        $('#txt_pricebig').val($(this).attr('data-object-pricebig'));
+        $('#txt_disc').val($(this).attr('data-object-disc'));
+        $('#txt_tax').val($(this).attr('data-object-tax'));
+
+    });
+
+    $(document).on('click', ".pilih-supplier", function (e) {    
+
+        $('#txt_supplier_code').val($(this).attr('data-s-id'));
+        $('#txt_supplier_name').val($(this).attr('data-s-name'));
+    });
+
+	$('#dataSupplier').on('shown.bs.modal', function (e) {
+		$('#supply').DataTable({
+			'processing': true,
+			'serverSide': true,
+			'stateSave': true,
+			retrieve: true,
+			'order': [],
+			'ajax': {
+				'url': "<?php echo site_url('purchase/supplier_list') ?>",
+				'type': 'POST',
+				'data': {
+				}
+			},
+			'columnDefs': [
+				{
+					'targets': [0,1,2,3,4],
+					'orderable': false,
+				},
+			],
+			dom: 'Blfrtip',
+			lengthMenu: [10, 20, 50, 100, 200, 500],
+			buttons: [
+			],
+		});
+    });
+    
+	$('#dataProduk').on('shown.bs.modal', function (e) {
+        
+		$('#produk').DataTable({
+			'processing': true,
+			'serverSide': true,
+			'stateSave': true,
+			retrieve: true,
+			'order': [],
+			'ajax': {
+				'url': "<?php echo site_url('purchase/product_list') ?>",
+				'type': 'POST',
+				'data': {
+				}
+			},
+			'columnDefs': [
+				{
+					'targets': [0,1,2,3,4],
+					'orderable': false,
+				},
+			],
+			dom: 'Blfrtip',
+			lengthMenu: [10, 20, 50, 100, 200, 500],
+			buttons: [
+			],
+		});
+    });
     $(document).ready(function () { 
         //$('#lbl_item').html(_ITEM);
         //$('#lbl_size').html(_SIZE);
@@ -241,7 +375,7 @@
         //$('#lbl_subtotal').html(_SUBTOTAL);
         $('#txt_purchase_id').val($('#txt_id').val());
         
-        tempLoading();
+        //tempLoading();
     });
     
     function tempLoading() {
@@ -302,9 +436,9 @@
     }
     
     function showItem() {
-        resetItem();
-        $("#modal_list").html('');
-        $("#modal_list").load('/purchase/purchase_item');
+        //resetItem();
+        //$("#modal_list").html('');
+        //$("#modal_list").load('/purchase/purchase_item');
     }
 
     function searchItem() {
@@ -349,7 +483,10 @@
                 $.ajax({
                     url: '/purchase/api_purchasetemp_delete', type: 'post', dataType: 'json', data: {'tID': localStorage.getItem('tID'), 'id': _id},
                     success: function (_json) {
-                        if (_json.status == 1) { _msgSuccess(_DELETED); tempLoading(); }
+                        if (_json.status == 1) { 
+                            _msgSuccess(_DELETED); 
+                           // tempLoading(); 
+                        }
                         else _msgError(_FAILED);
                     }
                 });
@@ -357,7 +494,7 @@
         });
         return false;
     }
-    $('#frmTemp').submit(function () {
+    $('#frmTemp_').submit(function () {
         _msg = '';
         if ($('#txt_item_code').val() == '') {
             _msg += _ITEMEMPTY + '<br>';
@@ -369,7 +506,7 @@
                 url: '/purchase/api_purchasetemp_save', type: 'post', dataType: 'json', data: $(this).serialize(),
                 success: function (_json) {
                     if (_json.status == 1) { 
-                        tempLoading();
+                       // tempLoading();
                     }
                 }
             });
