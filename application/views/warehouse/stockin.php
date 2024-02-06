@@ -16,11 +16,11 @@
             <tbody>
                 <tr>
                     <td><input type="hidden" id="search_p" name="data[search_p]" value="1"></td>
-                    <td><input id="search_date1" class="form-control" type="text" name="data[search_date1]" data-toggle="datepicker"></td>
-                    <td><input id="search_date2" class="form-control" type="text" name="data[search_date2]" data-toggle="datepicker"></td>
+                    <td><input id="search_date1" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date1]" data-toggle="datepicker"></td>
+                    <td><input id="search_date2" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date2]" data-toggle="datepicker"></td>
                     <td><input type="text" class="form-control" id="search_name" name="data[search_name]" onkeyup="nameChange()" placeholder="Search"></td>
                     <td>
-                        <select id="search_posting" class="form-control" name="data[search_posting]">
+                        <select id="search_posting" class="selectpicker form-select rounded-0 teal" name="data[search_posting]">
                             <option value="0"> All Status </option>
                             <option value="1"> Posting </option>
                             <option value="2"> Unposting  </option>

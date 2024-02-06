@@ -15,7 +15,8 @@ class Finance extends CI_Controller
         $this->load->model('warehouse_model');
         $this->load->model('accounts_model');
         $this->load->model('cashbond_model');
-        $this->load->model('employee_model');
+        $this->load->model('employee_model');        
+        $this->load->model('payment_staff_model');
         $this->load->model('data_model', 'dmodel');
     }
 
@@ -113,6 +114,16 @@ class Finance extends CI_Controller
         $this->load->view('finance/projectstaffpayment');
         $this->load->view('fixed/footer');
     }
+
+    public function api_projectstaffpayment(){
+
+        $min = $this->input->post('search_date1');
+        $max = $this->input->post('search_date2');
+        $se = $this->input->post('search_name');
+        $st = $this->input->get('search_posting');       
+        $output = array();
+        
+    }
     
     public function projectstaffpayment_add(){        
         //di klik dari https://gkcv.kotaawan.com/finance/staff
@@ -120,7 +131,7 @@ class Finance extends CI_Controller
         //pilih code dari list staff
         //simpan ke table smartpos_produksi_payment kode:PTEK
         
-        $head['title'] = "Staff";
+        $head['title'] = "Project Staff Add";
         $head['usernm'] = $this->aauth->get_user()->username;
         
         $this->load->view('fixed/header', $head);
@@ -134,12 +145,26 @@ class Finance extends CI_Controller
         //pilih code dari list staff
         //simpan ke table smartpos_produksi_payment kode:PTEK
         
-        $head['title'] = "Staff";
+        $head['title'] = "Project Staff Edit";
         $head['usernm'] = $this->aauth->get_user()->username;
         
         $this->load->view('fixed/header', $head);
         $this->load->view('finance/projectstaffpayment_edit');
         $this->load->view('fixed/footer');
+    }
+
+    public function api_projectstaffpayment_delete(){
+
+        if ($this->aauth->premission(11)) {
+            $id = $this->input->post('deleteid');
+           
+            //$this->db->delete('smartpos_job', array('id' => $id));
+            //echo json_encode(array('status' => '1', 'message' => $this->lang->line('DELETED')));
+
+        } else {
+            echo json_encode(array('status' => 'Error', 'message' =>
+                $this->lang->line('ERROR')));
+        }
     }
     
     public function receive()

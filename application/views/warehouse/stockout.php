@@ -14,10 +14,10 @@
         <table border="0" cellspacing="5" cellpadding="5" class="mb-2">
             <tbody>
                 <tr>
-                    <td><input type="text" id="min" name="min" data-toggle="datepicker"></td>
-                    <td><input type="text" id="max" name="max" data-toggle="datepicker"></td>
+                    <td><input type="text" id="min" name="min" data-toggle="datepicker" class="selectpicker form-select rounded-0 teal"></td>
+                    <td><input type="text" id="max" name="max" data-toggle="datepicker" class="selectpicker form-select rounded-0 teal"></td>
                     <td>
-                        <select id="status" name="status">
+                        <select id="status" name="status" class="selectpicker form-select rounded-0 teal">
                             <option value="0"> All Status </option>
                             <option value="1"> Posting </option>
                             <option value="2"> Unposting  </option>
