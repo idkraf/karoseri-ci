@@ -25,9 +25,52 @@
         </table>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     function showPayment(_id){
         window.location = 'finance/cashbondpayment_add/'+_id;
     }
     
+    $(document).ready(function () {
+        draw_data();
+
+        function draw_data() {
+            $('#cashbond').DataTable({
+                'processing': true,
+                'serverSide': true,
+                'stateSave': true,
+                'order': [],
+                'ajax': {
+                    'url': "<?php echo site_url('finance/api_cashbond') ?>",
+                    'type': 'POST',
+                    'data': {
+                        '<?= $this->security->get_csrf_token_name() ?>': crsf_hash
+                    }
+                },
+                'columnDefs': [
+                    {
+                        'targets': [0,1,2,3,4,5,6,7],
+                        'width' :"10%",
+                        'orderable': false,
+                    },
+                ],
+                dom: 'Blfrtip',
+                lengthMenu: [10, 20, 50, 100, 200, 500],
+                buttons: [                
+                    {
+                        text: 'Add Cashbond',
+                        action: function ( e, dt, node, config ) {
+                            window.location = 'cashbond_add';
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        footer: false,
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        }
+                    }
+                ],
+            });
+        };
+    });
 </script>

@@ -200,15 +200,8 @@ class Finance extends CI_Controller
         $this->load->view('fixed/footer');
     }
 
-    public function api_cashbond(){
-        //get data account 
-        //acount gabung 11100 - cash dan 11200 - bank
-        
-        //get data staff
-             
-        $output = array();
-        
-        //table smartpos_stock_r
+    public function api_cashbond(){             
+        $output = array();        
         $list = $this->cashbond_model->get_datatables();
         foreach ($list as $prd) {
 
@@ -236,27 +229,32 @@ class Finance extends CI_Controller
             $data[] = $row;
         }
         $output = array(
-            "pages" => $this->stockreturn_model->count_all(),
-            "rows" => $this->stockreturn_model->count_filtered(),
+            "recordsTotal" => $this->cashbond_model->count_all(),
+            "recordsFiltered" => $this->cashbond_model->count_filtered(),
             "data" => $data,
             'status' => true,
         );
 
         echo json_encode($output);
     }
+
     public function api_cashbond_add(){
                      
         $output = array();
 
         //get data staff
-        $staff = $this->employee_model->get($prd->staff_id);   
+        $staff = $this->dmodel->get('smartpos_employees', null, ['status'=>0]);   
         foreach ($staff as $srv) {
             //dari tabel smartpos_stock_r_items
             $row1 = array();
+            //$row1['id'] = $srv->id;
+            //$row1['code'] = $srv->code;
+            //$row1['name'] = $srv->name;
             $row1['id'] = $srv['id'];
             $row1['code'] = $srv['code'];
             $row1['name'] = $srv['name'];
-            array_push($output['_staff'], $row1);
+            //array_push($output['_staff'], $row1);
+            $output['_staff'][] = $row1;
         }
         
         //get data account 
@@ -268,7 +266,8 @@ class Finance extends CI_Controller
             $row2['id'] = $srv['id'];
             $row2['code'] = $srv['code'];
             $row2['name'] = $srv['name'];
-            array_push($output['_account'], $row2);
+            //array_push($output['_account'], $row2);
+            $output['_account'][] = $row2;
         }
         $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
         foreach ($ac2 as $srv) {
@@ -277,8 +276,10 @@ class Finance extends CI_Controller
             $row3['id'] = $srv['id'];
             $row3['code'] = $srv['code'];
             $row3['name'] = $srv['name'];
-            array_push($output['_account'], $row3);
+            //array_push($output['_account'], $row3);
+            $output['_account'][] = $row3;
         }
+        $output['status'] = 1;
 
         echo json_encode($output);
     }

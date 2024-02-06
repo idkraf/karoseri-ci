@@ -6,7 +6,7 @@ class Cashbond_model extends CI_Model {
 
       
     var $tablex = 'cashbond';
-    var $order = array('code' => 'asc');
+    var $order = array('id' => 'asc');
     var $column_search = array('code');
     
     private function _get_datatables_query() {

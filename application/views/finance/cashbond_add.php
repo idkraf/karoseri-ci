@@ -60,49 +60,52 @@
 </div>
 <script>
     
-    function pageControll() {
-        $.ajax({
-            url: '/finance/api_cashbond_add', type: 'post', dataType: 'json', data: {},
-            success: function (_json) {
-                if (_json.status == 1) {
-                    $('#_body').show();
-                    $('#_caption').html(_CASHBOND);
-                    $('#_module').html(_FINANCE);
-                    $('#_title').html(_CASHBOND);
-                    $('#_event').html(_ADD);
-                    
-                    $('#lbl_code').html('#');
-                    $('#lbl_date').html(_DATE);
-                    $('#lbl_staff').html(_STAFF);
-                    $('#lbl_description').html(_DESCRIPTION);
-                    $('#lbl_account').html(_ACCOUNT);
-                    $('#lbl_total').html(_TOTAL);
-                    $('#_btn').html(_SAVE);
-                    
-                    $('#txt_staff_id').html('');
-                    $.each(_json._staff, function (_i, _arr) {
-                        _html = '<option value="' + _arr.id + '">' + _arr.code + ' - ' + _arr.name + '</option>';
-                        $('#txt_staff_id').append(_html);
-                    });
-                    
-                    $('#txt_account_id').html('');
-                    $.each(_json._account, function (_i, _arr) {
-                        _html = '<option value="' + _arr.id + '">' + _arr.code + ' - ' + _arr.name + '</option>';
-                        $('#txt_account_id').append(_html);
-                    });
-                    
-                    $('#txt_tID').val(localStorage.getItem('tID'));
-                    $('#txt_id').val(_json.data.id);
-                    $('#txt_code').val(_AUTO);
-                    $('#txt_date').val(_json.data.date);
-                    $('#show_total').val('0.0000');
-                    $('#txt_total').val(0);
-                    $('#txt_description').focus();
+    $(document).ready(function () {
+        pageControll();
+        function pageControll() {
+            $.ajax({
+                url: '/finance/api_cashbond_add', type: 'get', dataType: 'json', data: {},
+                success: function (_json) {
+                    if (_json.status == 1) {
+                        $('#_body').show();
+                        $('#_caption').html(_CASHBOND);
+                        $('#_module').html(_FINANCE);
+                        $('#_title').html(_CASHBOND);
+                        $('#_event').html(_ADD);
+                        
+                        $('#lbl_code').html('#');
+                        $('#lbl_date').html(_DATE);
+                        $('#lbl_staff').html(_STAFF);
+                        $('#lbl_description').html(_DESCRIPTION);
+                        $('#lbl_account').html(_ACCOUNT);
+                        $('#lbl_total').html(_TOTAL);
+                        $('#_btn').html(_SAVE);
+                        
+                        $('#txt_staff_id').html('');
+                        $.each(_json._staff, function (_i, _arr) {
+                            console.log(_arr.id);
+                            _html = '<option value="' + _arr.id + '">' + _arr.code + ' - ' + _arr.name + '</option>';
+                            $('#txt_staff_id').append(_html);
+                        });
+                        
+                        $('#txt_account_id').html('');
+                        $.each(_json._account, function (_i, _arr) {
+                            _html = '<option value="' + _arr.id + '">' + _arr.code + ' - ' + _arr.name + '</option>';
+                            $('#txt_account_id').append(_html);
+                        });
+                        
+                        $('#txt_tID').val(localStorage.getItem('tID'));
+                        //$('#txt_id').val(_json.data.id);
+                        $('#txt_code').val(_AUTO);
+                        //$('#txt_date').val(_json.data.date);
+                        $('#show_total').val('0.0000');
+                        $('#txt_total').val(0);
+                        $('#txt_description').focus();
+                    }
                 }
-            }
-        });
-    }
-    
+            });
+        }
+    });
     $('#frm').submit(function () {
         _msg = '';
         if ($('#txt_total').val() == '0') _msg += _TOTALEMPTY + '<br>';
