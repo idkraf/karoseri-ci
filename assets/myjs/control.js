@@ -1,4 +1,188 @@
+_API = "https://gragekaroseri.tech";
+_APPLOADING = 1000;
+_PAGING = 10;
 
+_ACCOUNT = "Account";
+_ACCOUNTING = "Accounting";
+_ADD = "Add";
+_ADDRESS = "Address";
+_ADMIN = "Admin";
+_ALL = "All";
+_AUTO = "Auto";
+
+_BALANCE = "Balance";
+_BALANCESHEET = "Balance Sheet";
+_BBN = "BBN";
+_BEFORE = "Before";
+_BEGINBALANCE = "Begin Balance";
+_BODY = "Body";
+
+_CANCEL = "Cancel";
+_CASHBOND = "Cashbond";
+_CASHBONDPAYMENT = "Cashbond Payment";
+_CATEGORY = "Category";
+_CHANGEPASSWORD = "Change Password";
+_CHANGEPIN = "Change Pin";
+_CITY = "City";
+_CODE = "Code";
+_CODEEMPTY = "Code empty !";
+_COGS = "Cogs";
+_COLOUR = "Colour";
+_CONFIRM = "Confirm";
+_CONTROLLER = "Controller";
+_CONTROLLEREMPTY = "Controller empty !";
+_COST = "Cost";
+_CREDIT = 'Credit';
+_CUSTOMER = "Customer";
+
+_DASHBOARD = "Dashboard";
+_DATE = "Date";
+_DATEDUE = "Datedue";
+_DAY = "Day";
+_DAYS = "Days";
+_DEBIT = 'Debit';
+_DELETE = "Delete";
+_DELETED = "Success !";
+_DELETEQUESTION = "Delete ?";
+_DESCRIPTION = "Description";
+_DETAIL = "Detail";
+_DISC = "Disc";
+_DISCOUNT = "Discount";
+_DLV = "Dlv";
+
+_EDIT = "Edit";
+_ENTRY = "Entry";
+_ERR = "Error !";
+
+_FAILED = "Failed";
+_FINANCE = "Finance";
+
+_HIDE = "Hide";
+_HISTORY = "History";
+_HOME = "Home";
+
+_INDENT = "Indent";
+_INDEX = "Index";
+_INVENTORY = "Inventory";
+_ITEM = "Item";
+_ITEMCODE = "Item#";
+_ITEMEMPTY = "Item empty !";
+
+_JOB = "Job";
+_JOURNAL = "Journal";
+
+_LEDGER = "Ledger";
+_LEVEL = "Level";
+_LOGIN = "Login";
+_LOGOUT = "Logout";
+_LOGOUTQUESTION = "Logout ?";
+
+_MACHINE = "Machine";
+_MARKETING = "Marketing";
+_MODULE = "Module";
+
+_NAME = "Name";
+_NAMEEMPTY = "Name empty !";
+_NEXT = "Next";
+_NOTES = "Notes";
+
+_OK = "Ok";
+_OPERATION = "Operation";
+_OPNAME = "Opname";
+
+_PAGE = "Page";
+_PASSWORD = "Password";
+_PASSWORDEMPTY = "Password empty !";
+_PASSWORDINCORECT = "Password incorect !";
+_PAYABLE = "Payable";
+_PAYMENT = "Payment";
+_PAYMENTOVER = "Over Payment";
+_PERMIT = "Permit";
+_PERSON = "Person";
+_PIN = "Pin";
+_PINEMPTY = "Pin empty !";
+_PINFAILED = "Pin failed !";
+_PININCORECT = "Pin incorect !";
+_POLICE = "Police";
+_POSITION = "Position";
+_POSTINGQUESTION = "Posting ?";
+_PRICE = "Price";
+_PROFILE = "Profile";
+_PROFITLOSS = "Profit/Loss";
+_PROJECT = "Project";
+_PROJECTCODE = "Project#";
+_PROJECTPAYMENT = "Project Payment";
+_PURCHASE = "Purchase";
+_PURCHASECODE = "Purchase#";
+_PURCHASEPAYMENT = "Purchase Payment";
+
+_QUE = "Que";
+_QTY = "Qty";
+_QTYEMPTY = "Qty empty !";
+_QTYOVER = "Qty over !";
+
+_RATE = "Rate";
+_RCV = "Rcv";
+_RECEIVABLE = "Receivable";
+_RECEIVE = "Receive";
+_REQUEST = "Request";
+_RESET = "Reset";
+_RESETED = "Success !";
+_RESETQUESTION = "Reset Password ?";
+_RET = "Ret";
+_RETURN = "Return";
+_ROWS = "Rows";
+
+_SALE = "Sale";
+_SALECODE = "Sale#";
+_SALEPAYMENT = "Sale Payment";
+_SAVE = "Save";
+_SAVED = "Success !";
+_SEARCH = "Search";
+_SERVICE = "Service";
+_SETUP = "Setup";
+_SHOW = "Show";
+_SIZE = "Size";
+_STAFF = "Staff";
+_STAFFCODE = "Staff#";
+_STATUS = "Status";
+_STOCK = "Stock";
+_STOCKIN = "Stock In";
+_STOCKOUT = "Stock Out";
+_SUBTOTAL = "Subtotal";
+_SUBTOTALEMPTY = "Subtotal empty !";
+_SUCCESS = "Success !";
+_SUPPLIER = "Suplier";
+_SUPPLIERCODE = "Suplier#";
+_SUPPLIEREMPTY = "Suplier empty !";
+_SYSTEM = "Sys";
+
+_TAX = "Tax";
+_TAXES = "Taxes";
+_TELP = "Telp";
+_TEMPLATE = "Template";
+_STAFF = "Staff";
+_TIME = "Time";
+_TOTAL = "Total";
+_TOTALEMPTY = "Total empty !";
+
+_UNIT = "Unit";
+_UNPOSTED = "Success !";
+_UNPOSTINGQUESTION = "Unposting ?";
+_USED = "Used";
+_USER = "User";
+_USERNAME = "Username";
+_USEREMPTY = "User empty !";
+_USERLOCKED = "User locked !";
+_USERNOTACTIVE = "User not active !";
+_USERNOTFOUND = "User not found !";
+
+_VEHICLE = "Vehicle";
+_VIEW = "View";
+
+_WAREHOUSE = "Warehouse";
+
+_YEAR = "Year";
 function selectCustomer(cid, cname, cadd1, cadd2, ph, email, discount = 0) {
     $('#customer_id').val(cid);
     $('#custom_discount').val(discount);

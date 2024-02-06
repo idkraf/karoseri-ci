@@ -25,3 +25,9 @@
         </table>
     </div>
 </div>
+<script>
+    function showPayment(_id){
+        window.location = 'finance/cashbondpayment_add/'+_id;
+    }
+    
+</script>
