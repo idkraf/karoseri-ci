@@ -151,7 +151,7 @@ class Purchase_model extends CI_Model {
         }
     }
 
-    function get_datatables($min, $max, $st) {
+    function get_datatables($min = null, $max = null, $st = 0) {
         $params = array();
         $params['min'] = $min;
         $params['max'] = $max;

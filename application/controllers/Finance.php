@@ -18,6 +18,7 @@ class Finance extends CI_Controller
         $this->load->model('employee_model');        
         $this->load->model('payment_staff_model');
         $this->load->model('data_model', 'dmodel');
+        $this->load->model('purchase_model');
     }
 
     
@@ -33,10 +34,53 @@ class Finance extends CI_Controller
         $this->load->view('finance/purchase');
         $this->load->view('fixed/footer');
     }
+
+    public function api_purchase(){
+        $output = array();
+        
+        //table smartpos_stock_r
+        $list = $this->purchase_model->get_datatables();
+        foreach ($list as $prd) {
+            $total = $prd->total;
+            $payment = $prd->payment;
+            $balance = $total - $payment;
+            $row = array();
+            $row[] = $prd->code;
+            $row[] = dateformat($prd->date);
+            $row[] = dateformat($prd->datedue);
+            $row[] = $prd->name;
+            $row[] = $total;
+            $row[] = $payment;
+            $row[] = $balance;
+            $row[] = '<button class="btn btn-sm btn-warning" 
+            onclick="showAdd('.$prd->id.'); return false;">
+            <i class="fa fa-money-bill fa-sm"></i></button>';
+            
+            $data[] = $row;
+        }
+        $output = array(
+            "pages" => $this->purchase_model->count_all(),
+            "rows" => $this->purchase_model->count_filtered(),
+            "data" => $data,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+
     public function purchasepayment_add()
     {
+        
+        $purchase_id = intval($this->input->get('id'));
+
         //di klik dari https://gkcv.kotaawan.com/finance/purchase
         //sample https://gkcv.kotaawan.com/finance/purchasepayment_add
+        $head['title'] = "Purchase Payment";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        
+        $this->load->view('fixed/header', $head);
+        $this->load->view('finance/purchasepayment_add');
+        $this->load->view('fixed/footer');
     }
 
     public function purchasepayment()

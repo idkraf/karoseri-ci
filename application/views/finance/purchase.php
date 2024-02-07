@@ -24,3 +24,40 @@
         </table>
     </div>
 </div>
+
+<script type="text/javascript">
+    
+    function showAdd(_id) {
+        console.log(_id);
+        window.location = '/finance/purchasepayment_add?id='+_id;
+    }
+    $(document).ready(function () {
+        draw_data();
+
+        function draw_data() {
+            $('#purchase').DataTable({
+                'processing': true,
+                'serverSide': true,
+                'stateSave': true,
+                'order': [],
+                'ajax': {
+                    'url': "<?php echo site_url('finance/api_purchase') ?>",
+                    'type': 'POST',
+                    'data': {
+                        '<?= $this->security->get_csrf_token_name() ?>': crsf_hash
+                    }
+                },
+                'columnDefs': [
+                    {
+                        'targets': [0,1,2,3,4,5,6,7],
+                        'orderable': false,
+                    },
+                ],
+                dom: 'Blfrtip',
+                lengthMenu: [10, 20, 50, 100, 200, 500],
+                buttons: [                
+                ],
+            });
+        };
+    });
+</script>
