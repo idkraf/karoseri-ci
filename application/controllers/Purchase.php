@@ -52,8 +52,7 @@ class Purchase extends CI_Controller {
         $st = $this->input->get('status');       
         $output = array();
         
-        //table smartpos_stock_r
-        $list = $this->purchase_model->get_datatables($min, $max, $st);
+        $list = $this->purchase_model->get_datatables(0, $min, $max, $st);
         foreach ($list as $prd) {
             $total = 0;
             $row = array();

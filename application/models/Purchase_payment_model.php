@@ -2,42 +2,15 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Purchase_model extends CI_Model {
+class Purchase_payment_model extends CI_Model {
 
-    var $table = 'purchase';
-    var $column_order = array(null, 'purchase.id', 'smartpos_supplier.name', 'purchase.date', null);
-    var $column_search = array('purchase.code', 'smartpos_supplier.name', 'purchase.date', 'purchase.datedue', 'purchase.status');
+    var $table = 'purchase_payment';
+    var $column_order = array(null, 'purchase_payment.id', 'smartpos_supplier.name', 'purchase.date', null);
+    var $column_search = array('purchase_payment.code', 'purchase.code', 'smartpos_supplier.name', 'purchase.date', 'purchase.datedue', 'purchase.status');
     var $order = array('purchase.id' => 'desc');
 
     public function __construct() {
         parent::__construct();
-    }
-
-    public function lastpurchase() {
-        $this->db->select('id');
-        $this->db->from($this->table);
-        $this->db->order_by('id', 'DESC');
-        $this->db->limit(1);
-        $query = $this->db->get();
-        if ($query->num_rows() > 0) {
-            return $query->row()->tid;
-        } else {
-            return 1000;
-        }
-    }
-
-    public function warehouses() {
-        $this->db->select('*');
-        $this->db->from('smartpos_warehouse');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA)
-                $this->db->or_where('loc', 0);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
-        }
-        $query = $this->db->get();
-        return $query->result_array();
     }
 
     public function purchase_details($id) {
@@ -54,7 +27,8 @@ class Purchase_model extends CI_Model {
         } elseif (!BDATA) {
             $this->db->where('purchase.loc', 0);
         }
-        $this->db->join('smartpos_supplier', 'purchase.supplier_id = smartpos_supplier.id', 'left');
+        $this->db->join('purchase p', 'p.id = purchase_payment.purchase_id', 'left');
+        $this->db->join('smartpos_supplier', 'smartpos_supplier.id = p.supplier_id', 'left');
         //$this->db->join('smartpos_terms', 'smartpos_terms.id = purchase.term', 'left');
         $query = $this->db->get();
         return $query->row_array();
@@ -110,9 +84,11 @@ class Purchase_model extends CI_Model {
     }
 
     private function _get_datatables_query($params = null) {
-        $this->db->select('purchase.*,smartpos_supplier.name');
+        $this->db->select('purchase_payment.*, p.*,smartpos_supplier.name');
         $this->db->from($this->table);
-        $this->db->join('smartpos_supplier', 'purchase.supplier_id=smartpos_supplier.id', 'left');
+        $this->db->join('purchase p', 'p.id = purchase_payment.purchase_id', 'left');
+        $this->db->join('smartpos_supplier', 'smartpos_supplier.id = p.supplier_id', 'left');
+        //$this->db->join('smartpos_supplier', 'purchase.supplier_id=smartpos_supplier.id', 'left');
         if ($this->aauth->get_user()->loc) {
             $this->db->where('purchase.loc', $this->aauth->get_user()->loc);
         } elseif (!BDATA) {

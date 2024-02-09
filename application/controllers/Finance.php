@@ -35,9 +35,57 @@ class Finance extends CI_Controller
         $this->load->view('fixed/footer');
     }
 
-    public function api_purchase(){
+
+    public function purchase_list(){
         $output = array();
         
+        $purchase_id = intval($this->input->get('id'));
+        
+        $pid = intval($this->input->post('id'));
+        //table smartpos_stock_r
+        $list = $this->purchase_model->get_datatables($purchase_id, 0, 0, 0);
+        $data = array();
+        foreach ($list as $prd) {
+            $total = $prd->total;
+            $payment = $prd->payment;
+            $balance = $total - $payment;
+            $row = array();
+            $row2 = array();
+
+            $row[] = $prd->code;
+            $row[] = '';
+            $row[] = dateformat($prd->date);
+            $row[] = $prd->name;
+            $row[] = dateformat($prd->datedue);
+            //$row[] = $prd->name;
+            $row[] = $total;
+            $row[] = $payment;
+            $row[] = $balance;
+            $row[] = '<button 
+            data-view-id="' . $prd->id . '"
+            data-view-name="'.$prd->name.'"
+            data-view-code="'.$prd->code.'" 
+            data-view-total="'.$prd->total.'"
+            data-view-payment="'.$prd->payment.'"
+            data-view-date="'.$prd->date.'"
+            data-view-duedate="'.$prd->duedate.'"
+            class="btn btn-sm btn-warning pilih-purchase"
+            data-toggle="modal" data-target="#dataPurchase" data-dismiss="modal">
+            <i class="fa fa-share fa-sm"></i></button>';
+            
+            $data[] = $pid == $prd->id ? $row2 : $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->purchase_model->count_all(),
+            "recordsFiltered" => $this->purchase_model->count_filtered(),
+            "data" => $data,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+    public function api_purchase(){
+        $output = array();
         //table smartpos_stock_r
         $list = $this->purchase_model->get_datatables();
         foreach ($list as $prd) {
@@ -54,13 +102,15 @@ class Finance extends CI_Controller
             $row[] = $balance;
             $row[] = '<button class="btn btn-sm btn-warning" 
             onclick="showAdd('.$prd->id.'); return false;">
-            <i class="fa fa-money-bill fa-sm"></i></button>';
+            <i class="fa fa-money fa-sm"></i></button>';
             
             $data[] = $row;
         }
         $output = array(
             "pages" => $this->purchase_model->count_all(),
             "rows" => $this->purchase_model->count_filtered(),
+            "recordsTotal" => $this->purchase_model->count_all(),
+            "recordsFiltered" => $this->purchase_model->count_filtered(),
             "data" => $data,
             'status' => true,
         );
@@ -77,9 +127,27 @@ class Finance extends CI_Controller
         //sample https://gkcv.kotaawan.com/finance/purchasepayment_add
         $head['title'] = "Purchase Payment";
         $head['usernm'] = $this->aauth->get_user()->username;
-        
+        $data = array();
+        $data['purchase'] = $this->purchase_model->purchase_details($purchase_id);
+        $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
+        foreach ($ac1 as $srv) {
+            $row2 = array();
+            $row2['id'] = $srv['id'];
+            $row2['code'] = $srv['code'];
+            $row2['name'] = $srv['name'];
+            $data['account'][] = $row2;
+        }
+        $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
+        foreach ($ac2 as $srv) {
+            $row3 = array();
+            $row3['id'] = $srv['id'];
+            $row3['code'] = $srv['code'];
+            $row3['name'] = $srv['name'];
+            $data['account'][] = $row3;
+        }
+
         $this->load->view('fixed/header', $head);
-        $this->load->view('finance/purchasepayment_add');
+        $this->load->view('finance/purchasepayment_add', $data);
         $this->load->view('fixed/footer');
     }
 
