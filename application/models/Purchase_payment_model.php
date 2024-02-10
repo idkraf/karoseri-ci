@@ -17,19 +17,19 @@ class Purchase_payment_model extends CI_Model {
 
         //$this->db->select('purchase.*,purchase.id AS iid,SUM(purchase.shipping + purchase.ship_tax) AS shipping,smartpos_supplier.*,smartpos_supplier.id AS cid,smartpos_terms.id AS termid,smartpos_terms.title AS termtit,smartpos_terms.terms AS terms');
         
-        $this->db->select('purchase.*,purchase.id AS iid,smartpos_supplier.*,smartpos_supplier.id AS cid');
+        //$this->db->select('purchase.*,purchase.id AS iid,smartpos_supplier.*,smartpos_supplier.id AS cid');
+        //$this->db->from($this->table);
+        
+        $this->db->select('purchase_payment.*');
+        $this->db->select('p.*');
+        $this->db->select('s.name');
+        $this->db->select('a.name as aname');
         $this->db->from($this->table);
-        $this->db->where('purchase.id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('purchase.loc', $this->aauth->get_user()->loc);
-            if (BDATA)
-                $this->db->or_where('purchase.loc', 0);
-        } elseif (!BDATA) {
-            $this->db->where('purchase.loc', 0);
-        }
-        $this->db->join('purchase p', 'p.id = purchase_payment.purchase_id', 'left');
-        $this->db->join('smartpos_supplier', 'smartpos_supplier.id = p.supplier_id', 'left');
-        //$this->db->join('smartpos_terms', 'smartpos_terms.id = purchase.term', 'left');
+        $this->db->join('accounts a', 'a.id = purchase_payment.account_id');
+        $this->db->join('purchase p', 'p.id = purchase_payment.purchase_id');
+        $this->db->join('smartpos_supplier s', 's.id = p.supplier_id', 'left');
+
+        $this->db->where('purchase_payment.idp', $id);
         $query = $this->db->get();
         return $query->row_array();
     }

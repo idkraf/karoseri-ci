@@ -155,9 +155,27 @@ class Finance extends CI_Controller
     {
         $head['title'] = "Purchase Payment";
         $head['usernm'] = $this->aauth->get_user()->username;
-        
+        $data = array();
+        $data['purchase'] = $this->purchase_model->purchase_details($purchase_id);
+        $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
+        foreach ($ac1 as $srv) {
+            $row2 = array();
+            $row2['id'] = $srv['id'];
+            $row2['code'] = $srv['code'];
+            $row2['name'] = $srv['name'];
+            $data['account'][] = $row2;
+        }
+        $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
+        foreach ($ac2 as $srv) {
+            $row3 = array();
+            $row3['id'] = $srv['id'];
+            $row3['code'] = $srv['code'];
+            $row3['name'] = $srv['name'];
+            $data['account'][] = $row3;
+        }
+
         $this->load->view('fixed/header', $head);
-        $this->load->view('finance/purchasepayment');
+        $this->load->view('finance/purchasepayment', $data);
         $this->load->view('fixed/footer');
     }
     public function api_purchasepayment(){
@@ -194,12 +212,12 @@ class Finance extends CI_Controller
         //$list = $this->purchase_payment_model->get_datatables();
         foreach ($list as $prd) {
             $row = array();
-            $total = $prd->total;
-            $payment = $prd->payment;
+            $total = $prd->ptotal;
+            $payment = $prd->ppayment;
             $row['id'] = $prd->idp;
             $row['code'] = $prd->ppcode;
-            $row['date'] = dateformat($prd->date);
-            $row['datedue'] = dateformat($prd->datedue);
+            $row['date'] = dateformat($prd->pdate);
+            $row['datedue'] = dateformat($prd->pdatedue);
             $row['supplier_name'] = $prd->name;
             $row['account_name'] = $prd->aname;
             $row['total'] = $total;
@@ -209,7 +227,7 @@ class Finance extends CI_Controller
             $purchase = $this->dmodel->get('purchase', null, ['id' => $prd->purchase_id]);
             foreach($purchase as $p){
                 $row1 = array();   
-                $row1['purchas_code'] = $p['code'];
+                $row1['purchase_code'] = $p['code'];
                 $row1['purchase_date'] = dateformat($p['date']);
                 $row1['total'] = $p['total'];
                 $row1['payment'] = $p['payment'];
@@ -237,15 +255,14 @@ class Finance extends CI_Controller
     public function purchasepayment_edit()
     {
         //di klik dari https://gkcv.kotaawan.com/finance/purchasepayment
-        //sample https://gkcv.kotaawan.com/finance/purchasepayment_edit
-        
+        //sample https://gkcv.kotaawan.com/finance/purchasepayment_edit        
         $purchase_id = intval($this->input->get('id'));
         //di klik dari https://gkcv.kotaawan.com/finance/purchase
         //sample https://gkcv.kotaawan.com/finance/purchasepayment_add
         $head['title'] = "Edit Purchase Payment";
         $head['usernm'] = $this->aauth->get_user()->username;
         $data = array();
-        $data['purchase'] = $this->purchase_model->purchase_details($purchase_id);
+        $data['purchase'] = $this->purchase_payment_model->purchase_details($purchase_id);
         $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
         foreach ($ac1 as $srv) {
             $row2 = array();
@@ -267,7 +284,9 @@ class Finance extends CI_Controller
         $this->load->view('finance/purchasepayment_edit', $data);
         $this->load->view('fixed/footer');
     }
+    public function api_projectpayment_project(){
 
+    }
     //end purchase payment
 
     //start project

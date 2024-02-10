@@ -19,7 +19,8 @@
                         <td><input id="search_date1" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date1]" data-toggle="datepicker"></td>
                         <td><input id="search_date2" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date2]" data-toggle="datepicker"></td>
                         <td>                            
-                            <select id="search_account" name="data[account_id]" class="selectpicker form-select rounded-0">
+                            <select id="search_account" name="data[account_id]" class="selectpicker form-select rounded-0">                                
+                                <option value="0"> All Account </option>
                                 <?php
                                     foreach ($account as $row) {
                                         $cid = $row['id'];
@@ -31,13 +32,11 @@
                         </td>
                         <td><input type="text" class="form-control" id="search_name" name="data[search_name]" onkeyup="nameChange()" placeholder="Search"></td>
                         <td>
-                            <div class="form-group">
-                                <select id="search_posting" class="selectpicker form-select rounded-0 teal" name="data[search_posting]">
-                                    <option value="0"> All Status </option>
-                                    <option value="1"> Posting </option>
-                                    <option value="2"> Unposting  </option>
-                                </select>
-                            </div>
+                            <select id="search_posting" class="selectpicker form-select rounded-0 teal" name="data[search_posting]">
+                                <option value="0"> All Status </option>
+                                <option value="1"> Posting </option>
+                                <option value="2"> Unposting  </option>
+                            </select>
                         </td>
                 </tbody>
             </table>
@@ -197,7 +196,7 @@
         return false;
     });
 
-    function showEdit(_id) { localStorage.setItem('_id', _id); window.location = '/finance/purchasepayment_edit'; }
+    function showEdit(_id) { localStorage.setItem('_id', _id); window.location = '/finance/purchasepayment_edit?id='+_id }
 
     function showDelete(_id) {
         Swal.fire({
