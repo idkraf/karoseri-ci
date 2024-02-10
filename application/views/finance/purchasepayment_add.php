@@ -25,7 +25,7 @@
                         <td>
                             <div class="form-group">
                                 <label class="form-label">Tanggal</label>
-                                <input id="txt_date" class="form-control" type="text" name="data[date]" data-toggle="datepicker" autocomplete="false">
+                                <input id="txt_date" class="selectpicker form-select rounded-0" type="text" name="data[date]" data-toggle="datepicker" autocomplete="false">
                             </div>
                         </td>
                         <td>
@@ -141,7 +141,7 @@
                         <tr>
                             <td>Account</td>
                             <td class=" p-1">
-                            <select name="account_id" class="form-control">
+                            <select name="account_id" class="selectpicker form-select rounded-0">
                                 <?php
                                     foreach ($account as $row) {
                                         $cid = $row['id'];
@@ -164,7 +164,7 @@
             <div class="row">
                 <div class="col-sm-3">
                     <label id="lbl_datedue">Datedue</label>
-                    <input class="form-control" id="txt_datedue" name="data[datedue]" data-toggle="datepicker">
+                    <input class="selectpicker form-select rounded-0" id="txt_datedue" name="data[datedue]" data-toggle="datepicker">
                 </div>
                 <div class="col-sm-3">
                     <label id="lbl_notes">Notes</label>

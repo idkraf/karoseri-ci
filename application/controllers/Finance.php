@@ -19,6 +19,7 @@ class Finance extends CI_Controller
         $this->load->model('payment_staff_model');
         $this->load->model('data_model', 'dmodel');
         $this->load->model('purchase_model');
+        $this->load->model('purchase_payment_model');
     }
 
     
@@ -122,7 +123,6 @@ class Finance extends CI_Controller
     {
         
         $purchase_id = intval($this->input->get('id'));
-
         //di klik dari https://gkcv.kotaawan.com/finance/purchase
         //sample https://gkcv.kotaawan.com/finance/purchasepayment_add
         $head['title'] = "Purchase Payment";
@@ -160,6 +160,78 @@ class Finance extends CI_Controller
         $this->load->view('finance/purchasepayment');
         $this->load->view('fixed/footer');
     }
+    public function api_purchasepayment(){
+        $data = array();
+        //$data['purchase'] = $this->purchase_model->purchase_details($purchase_id);
+        $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
+        foreach ($ac1 as $srv) {
+            $row2 = array();
+            $row2['id'] = $srv['id'];
+            $row2['code'] = $srv['code'];
+            $row2['name'] = $srv['name'];
+            $data['account'][] = $row2;
+        }
+        $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
+        foreach ($ac2 as $srv) {
+            $row3 = array();
+            $row3['id'] = $srv['id'];
+            $row3['code'] = $srv['code'];
+            $row3['name'] = $srv['name'];
+            $data['account'][] = $row3;
+        }
+        $data['status'] = 1;
+        return $data;
+    }
+    public function api_purchasepayment_search(){
+        
+        $output = array();
+        $paging = $this->input->post('search_p');
+        $search = $this->input->post('search_name');
+        $min = $this->input->post('search_date1');
+        $max = $this->input->post('search_date2');
+        $posting = $this->input->post('search_posting');
+        $list = $this->purchase_payment_model->get_datatables($search, $min, $max, $posting, $paging);
+        //$list = $this->purchase_payment_model->get_datatables();
+        foreach ($list as $prd) {
+            $row = array();
+            $total = $prd->total;
+            $payment = $prd->payment;
+            $row['id'] = $prd->idp;
+            $row['code'] = $prd->ppcode;
+            $row['date'] = dateformat($prd->date);
+            $row['datedue'] = dateformat($prd->datedue);
+            $row['supplier_name'] = $prd->name;
+            $row['account_name'] = $prd->aname;
+            $row['total'] = $total;
+            $row['payment'] = $payment;
+            $row['discount'] = $prd->discount;
+            
+            $purchase = $this->dmodel->get('purchase', null, ['id' => $prd->purchase_id]);
+            foreach($purchase as $p){
+                $row1 = array();   
+                $row1['purchas_code'] = $p['code'];
+                $row1['purchase_date'] = dateformat($p['date']);
+                $row1['total'] = $p['total'];
+                $row1['payment'] = $p['payment'];
+                //array_push();
+                $row['detail'][] = $row1;
+            }
+            
+            $data[] = $row;
+        }
+        $output = array(
+            "pages" => $this->purchase_payment_model->count_all(),
+            "rows" => $this->purchase_payment_model->count_filtered(),
+            "data" => $data != null ? $data : [],
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+
+    public function api_purchasepayment_delete(){
+
+    }
 
     
     public function purchasepayment_edit()
@@ -167,7 +239,38 @@ class Finance extends CI_Controller
         //di klik dari https://gkcv.kotaawan.com/finance/purchasepayment
         //sample https://gkcv.kotaawan.com/finance/purchasepayment_edit
         
+        $purchase_id = intval($this->input->get('id'));
+        //di klik dari https://gkcv.kotaawan.com/finance/purchase
+        //sample https://gkcv.kotaawan.com/finance/purchasepayment_add
+        $head['title'] = "Edit Purchase Payment";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $data = array();
+        $data['purchase'] = $this->purchase_model->purchase_details($purchase_id);
+        $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
+        foreach ($ac1 as $srv) {
+            $row2 = array();
+            $row2['id'] = $srv['id'];
+            $row2['code'] = $srv['code'];
+            $row2['name'] = $srv['name'];
+            $data['account'][] = $row2;
+        }
+        $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
+        foreach ($ac2 as $srv) {
+            $row3 = array();
+            $row3['id'] = $srv['id'];
+            $row3['code'] = $srv['code'];
+            $row3['name'] = $srv['name'];
+            $data['account'][] = $row3;
+        }
+
+        $this->load->view('fixed/header', $head);
+        $this->load->view('finance/purchasepayment_edit', $data);
+        $this->load->view('fixed/footer');
     }
+
+    //end purchase payment
+
+    //start project
     public function project()
     {
         //data dari tabel

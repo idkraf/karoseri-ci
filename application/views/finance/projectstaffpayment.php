@@ -12,24 +12,26 @@
             <div class="message"></div>
         </div> 
         
-        <table border="0" cellspacing="5" cellpadding="5" class="mb-2">
-            <tbody>
-                <tr>
-                    <td><input type="hidden" id="search_p" name="data[search_p]" value="1"></td>
-                    <td><input id="search_date1" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date1]" data-toggle="datepicker"></td>
-                    <td><input id="search_date2" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date2]" data-toggle="datepicker"></td>
-                    <td><input type="text" class="form-control" id="search_name" name="data[search_name]" onkeyup="nameChange()" placeholder="Search"></td>
-                    <td>
-                        <div class="form-group">
-                            <select id="search_posting" class="selectpicker form-select rounded-0 teal" name="data[search_posting]">
-                                <option value="0"> All Status </option>
-                                <option value="1"> Posting </option>
-                                <option value="2"> Unposting  </option>
-                            </select>
-                        </div>
-                    </td>
-            </tbody>
-        </table>
+        <form id="frmSearch" class="form-inline">
+            <table border="0" cellspacing="5" cellpadding="5" class="mb-2">
+                <tbody>
+                    <tr>
+                        <td><input type="hidden" id="search_p" name="data[search_p]" value="1"></td>
+                        <td><input id="search_date1" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date1]" data-toggle="datepicker"></td>
+                        <td><input id="search_date2" class="selectpicker form-select rounded-0 teal" type="text" name="data[search_date2]" data-toggle="datepicker"></td>
+                        <td><input type="text" class="form-control" id="search_name" name="data[search_name]" onkeyup="nameChange()" placeholder="Search"></td>
+                        <td>
+                            <div class="form-group">
+                                <select id="search_posting" class="selectpicker form-select rounded-0 teal" name="data[search_posting]">
+                                    <option value="0"> All Status </option>
+                                    <option value="1"> Posting </option>
+                                    <option value="2"> Unposting  </option>
+                                </select>
+                            </div>
+                        </td>
+                </tbody>
+            </table>
+        </form>
         <table id="staffpayment" class="table table-striped table-bordered zero-configuration table-sm ">
         </table>
     </div>
@@ -135,25 +137,25 @@
                     });
                     _html = '<tr class="bg-gray-light">';
                     _html+= '<td colspan="100" class="pt-2 pb-1">';
-                    _html+= '<div class="float-left">';
+                    _html+= '<div class="float-left" style="float: left !important;">';
                     _html+= '<b>' + _ROWS + ':</b> ' + _start + '-' + _end;
                     _html+= '&nbsp; | &nbsp;';
                     _html+= '<b>' + _TOTAL + ':</b> ' + _json.data.length + '/' + _rows + ' ' + _ROWS;
                     _html+= '</div>';
-                    _html+= '<div class="float-right">';
+                    _html+= '<div class="float-right" style="float: right !important;">';
                     _html+= '<b>' + _PAGE + ':</b> ' + _page + '/' + _pages;
                     _html+= '<div class="btn-group ml-2">';
 
                     _bg = ' btn-dark'; _disabled = ' disabled';
                     if (_page > 1) { _bg = ' btn-info'; _disabled = ''; }
                     _html+= '<button onclick=clickPrev() class="btn btn-sm pl-2 pr-2' + _bg + '"' + _disabled + '>';
-                    _html+= '<i class="fas fa-chevron-left"></i>';
+                    _html+= '<i class="fa fa-chevron-left"></i>';
                     _html+= '</button>';
 
                     _bg = ' btn-dark'; _disabled = ' disabled';
                     if (_page < _pages) { _bg = ' btn-info'; _disabled = ''; }
                     _html+= '<button onclick=clickNext() class="btn btn-sm ml-1 pl-2 pr-2' + _bg + '"' + _disabled + '>';
-                    _html+= '<i class="fas fa-chevron-right"></i>';
+                    _html+= '<i class="fa fa-chevron-right"></i>';
                     _html+= '</button>';
 
                     _html+= '</div>';

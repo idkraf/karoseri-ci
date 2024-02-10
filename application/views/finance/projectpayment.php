@@ -144,25 +144,25 @@
                     });
                     _html = '<tr class="bg-gray-light">';
                     _html+= '<td colspan="100" class="pt-2 pb-1">';
-                    _html+= '<div class="float-left">';
+                    _html+= '<div class="float-left" style="float: left !important;">';
                     _html+= '<b>' + _ROWS + ':</b> ' + _start + '-' + _end;
                     _html+= '&nbsp; | &nbsp;';
                     _html+= '<b>' + _TOTAL + ':</b> ' + _json.data.length + '/' + _rows + ' ' + _ROWS;
                     _html+= '</div>';
-                    _html+= '<div class="float-right">';
+                    _html+= '<div class="float-right" style="float: right !important;">';
                     _html+= '<b>' + _PAGE + ':</b> ' + _page + '/' + _pages;
                     _html+= '<div class="btn-group ml-2">';
 
                     _bg = ' btn-dark'; _disabled = ' disabled';
                     if (_page > 1) { _bg = ' btn-info'; _disabled = ''; }
                     _html+= '<button onclick=clickPrev() class="btn btn-sm pl-2 pr-2' + _bg + '"' + _disabled + '>';
-                    _html+= '<i class="fas fa-chevron-left"></i>';
+                    _html+= '<i class="fa fa-chevron-left"></i>';
                     _html+= '</button>';
 
                     _bg = ' btn-dark'; _disabled = ' disabled';
                     if (_page < _pages) { _bg = ' btn-info'; _disabled = ''; }
                     _html+= '<button onclick=clickNext() class="btn btn-sm ml-1 pl-2 pr-2' + _bg + '"' + _disabled + '>';
-                    _html+= '<i class="fas fa-chevron-right"></i>';
+                    _html+= '<i class="fa fa-chevron-right"></i>';
                     _html+= '</button>';
 
                     _html+= '</div>';
