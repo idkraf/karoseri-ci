@@ -55,7 +55,7 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () { localStorage.setItem('router', '/accounting/balancesheet'); ajaxLoading(); });
+    //$(document).ready(function () { localStorage.setItem('router', '/accounting/balancesheet'); ajaxLoading(); });
 
     function pageControll() {
         $.ajax({
@@ -199,5 +199,5 @@
         return false;
     });
     
-    function showLedger(_id) { localStorage.setItem('_id', _id); window.location = '/accounting/ledger'; }
+    function showLedger(_id) {window.location = '/accounting/ledger?id='_id; }
 </script>
