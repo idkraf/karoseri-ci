@@ -13,6 +13,7 @@ class Accounting extends CI_Controller
             exit;
         }
         $this->load->model('accounts_model');
+        $this->load->model('balance_model');
         $this->load->model('data_model', 'dmodel');
     }
 
@@ -162,7 +163,32 @@ class Accounting extends CI_Controller
     }
 
     public function api_balancesheet_search(){
+        $data = $array();
+        $output = $array();
+        $list1 = $this->account_model->get_datatables();        
+        foreach($list1 as $lis){
+            //$list1 = $this->balance_model->get_datatables();
+            $leds = $this->ledger_model->get_datatables($lis->id);
+            foreach($leds as $led){
+                //$account_name = $this->dmodel->get_column('accounts','name',['id'=>1]);
+                $row = $array();
+                $row['account_show'] = $lis->level != 3 ? 1 : 3; //1=click to ledger
+                $row['description'] = $list->name;//$account_name;//.'-'.$led->deskripsi;
+                $row['account_id'] = $led->account_id;
+                $row['debit'] = $led->debit;
+                $row['total'] = $led->credit;
+                $row['balance'] = +$led->credit;
+                
+                $data = $row;
+            }
+        }
         
+        $output = array(
+            "data1" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+
     }
 
     //end balancesheet

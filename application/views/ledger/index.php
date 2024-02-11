@@ -21,6 +21,9 @@
                     <th>Date</th>
                     <th>Description</th>
                     <th></th>
+                    <th>Debit</th>
+                    <th>Kredit</th>
+                    <th>Balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,7 +55,7 @@
                     //    'width' :"90%",
                     //},
                     {
-                        'targets': [0,1,2,3,4,5],
+                        'targets': [0,1,2,3,4,5,6,7,8],
                         'orderable': false,
                     },
                 ],

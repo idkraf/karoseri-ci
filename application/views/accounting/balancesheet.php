@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <form id="frmSearch" class="form-inline">
-                            <input type="hidden" id="search_tID" name="data[tID]" value="YTQ0OGZiNDRmN2FmZDhmZjZjNzhhODVlMjljNzkxNDc1MDU0OWZlNjY1NzUxYzM4Nzk1NmU5ZTE0Yzg4N2Q0Nw==">
+                            <input type="hidden" id="search_tID" name="data[tID]" value="">
                             <input type="hidden" id="search_p" name="data[search_p]" value="1">
 
                             <div class="input-group input-group-sm">
@@ -85,6 +85,7 @@
             }
         });
     }
+    //searchChange();
     function searchChange() { $('#frmSearch').submit(); }
     $('#frmSearch').submit(function () {
         $.ajax({
@@ -199,5 +200,5 @@
         return false;
     });
     
-    function showLedger(_id) {window.location = '/accounting/ledger?id='_id; }
+    function showLedger(_id) {window.location = '/accounting/ledger?id='+_id; }
 </script>

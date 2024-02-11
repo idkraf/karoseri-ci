@@ -69,12 +69,14 @@ class Ledger_model extends CI_Model {
     public function add($params){
         $data = array(
             'account_id' => $params['account_id'],
-            'code' => $params['code'],
+            'kode' => $params['kode'],
             'tanggal' => $params['tanggal'],
             'deskripsi' => $params['deskripsi'],
+            'debit' => $params['debit'],
+            'kredit' => $params['kredit'],
         );
         if($params['supplier_id'] !=null) $data['supplier_id'] = $params['supplier_id'];
-        if($params['customer_id'] !=null) $data['supplier_id'] = $params['customer_id'];
+        if($params['customer_id'] !=null) $data['customer_id'] = $params['customer_id'];
 
 
         if ($this->db->insert($this->table, $data)) {
@@ -88,12 +90,14 @@ class Ledger_model extends CI_Model {
     public function update($params){
         $data = array(
             'account_id' => $params['account_id'],
-            'code' => $params['code'],
+            'kode' => $params['kode'],
             'tanggal' => $params['tanggal'],
             'deskripsi' => $params['deskripsi'],
+            'debit' => $params['debit'],
+            'kredit' => $params['kredit'],
         );
         if($params['supplier_id'] !=null) $data['supplier_id'] = $params['supplier_id'];
-        if($params['customer_id'] !=null) $data['supplier_id'] = $params['customer_id'];
+        if($params['customer_id'] !=null) $data['customer_id'] = $params['customer_id'];
         
         $this->db->set($data);
         $this->db->where('id', $params['id']);

@@ -39,16 +39,22 @@ class Ledger extends CI_Controller
         $list = $this->ledger_model->get_datatables($id);
         foreach($list as $led){
             $row = array();
+            $debit = $led->debit;
+            $credit = $led->credit;
             $name = '';
             if($led->customer_id != 0){
                 
             }
+            //$balance
             $row[] = $led->id;
             $row[] = date('d-M-Y', strtotime($prd->created_at));
             $row[] = $led->code;
             $row[] = date('d-M-Y', strtotime($prd->tanggal));
             $row[] = $led->deskripsi;
             $row[] = $name;
+            $row[] = $debit;
+            $row[] = $credit;
+            $row[] = +$credit;
             $data[] = $row;
         }
         $output = array(
