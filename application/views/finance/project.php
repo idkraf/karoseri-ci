@@ -25,3 +25,52 @@
         </table>
     </div>
 </div>
+
+<script type="text/javascript">
+    function showAdd(_id) {
+        console.log(_id);
+        window.location = '/finance/projectpayment_add?id='+_id;
+    }
+$(document).ready(function () {
+        draw_data();
+
+        function draw_data() {
+            $('#project').DataTable({
+                'processing': true,
+                'serverSide': true,
+                'stateSave': true,
+                'order': [],
+                'ajax': {
+                    'url': "<?php echo site_url('finance/ajax_project_list') ?>",
+                    'type': 'POST',
+                    'data': {
+                        '<?= $this->security->get_csrf_token_name() ?>': crsf_hash
+                    }
+                },
+                'columnDefs': [
+                    {
+                        'targets': [0,1,2,3,4,5,6,7,8],
+                        'orderable': false,
+                    },
+                ],
+                dom: 'Blfrtip',
+                lengthMenu: [10, 20, 50, 100, 200, 500],
+                buttons: [                    
+                    {
+                        text: 'Add Job',
+                        action: function ( e, dt, node, config ) {
+                           $('#AddJobs').modal('show');
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        footer: false,
+                        exportOptions: {
+                            columns: [1]
+                        }
+                    },
+                ],
+            });
+        };
+    });
+</script>

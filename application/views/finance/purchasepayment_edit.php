@@ -99,7 +99,7 @@
                             <tr>
                                 <td colspan="5" >&nbsp;</td>
                                 <td class="text-bold text-end" id="lbl_total">Total</td>
-                                <td class="th-total2 ps-1 pe-1">
+                                <td class="th-total2 ps-1 pe-1" style="width:180px">
                                     <input type="text" class="form-control form-control-sm text-end" id="show_total" disabled=""  value="<?php echo $purchase['ptotal'] ?>">
                                     <input type="hidden" id="txt_total" name="data[total]"  value="<?php echo $purchase['ptotal'] ?>">
                                 </td>
@@ -163,7 +163,7 @@
                             <tr>
                                 <td colspan="5" >&nbsp;</td>
                                 <td class="text-bold text-end" id="lbl_discount">Discount</td>
-                                <td class="th-total2 ps-1 pe-1" style="width:180px">
+                                <td class="th-total2 ps-1 pe-1">
                                     <input type="text" class="form-control form-control-sm text-right" id="show_discount" value="<?php echo $purchase['diskon'] ?>">
                                     <input type="hidden" id="txt_discount" name="data[discount]" value="<?php echo $purchase['diskon'] ?>">
                                     <script>
@@ -286,7 +286,7 @@
 
             $('#frmList').submit(function () {
                 $.ajax({
-                    url: "/finance/api_projectpayment_project", type: "post", dataType: "json", data: $(this).serialize(),
+                    url: "/finance/api_purchasepayment_project", type: "post", dataType: "json", data: $(this).serialize(),
                     success: function (_json) {
                         if (_json.status == 1) {
                             $('#_list').html('');

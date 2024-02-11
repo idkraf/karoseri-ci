@@ -20,6 +20,7 @@ class Finance extends CI_Controller
         $this->load->model('data_model', 'dmodel');
         $this->load->model('purchase_model');
         $this->load->model('purchase_payment_model');
+        $this->load->model('produksi_model');
     }
 
     
@@ -76,6 +77,7 @@ class Finance extends CI_Controller
             
             $data[] = $pid == $prd->id ? $row2 : $row;
         }
+
         $output = array(
             "recordsTotal" => $this->purchase_model->count_all(),
             "recordsFiltered" => $this->purchase_model->count_filtered(),
@@ -284,7 +286,7 @@ class Finance extends CI_Controller
         $this->load->view('finance/purchasepayment_edit', $data);
         $this->load->view('fixed/footer');
     }
-    public function api_projectpayment_project(){
+    public function api_purchasepayment_project(){
 
     }
     //end purchase payment
@@ -293,7 +295,7 @@ class Finance extends CI_Controller
     public function project()
     {
         //data dari tabel
-
+        //code TPRO
 
         $head['title'] = "Project";
         $head['usernm'] = $this->aauth->get_user()->username;
@@ -302,9 +304,187 @@ class Finance extends CI_Controller
         $this->load->view('finance/project');
         $this->load->view('fixed/footer');
     }
-    
+    public function project_list(){
+ 
+        $list = $this->produksi_model->get_datatables();
+        $data = array();
+        foreach ($list as $prd) {
+            $row = array();
+            $balance = $prd->total - $prd->payment;
+            $row[] = $prd->code;
+            $row[] = date('d-M-Y', strtotime($prd->date));
+            $row[] = $prd->name;
+            $row[] = $prd->vname;
+            $row[] = date('d-M-Y', strtotime($prd->datedue));
+            $row[] = number_format($prd->total, 4, ".", ".");
+            $row[] = number_format($prd->payment, 4, ".", ".");
+            $row[] = $balance;
+            $row[] = '<button 
+            data-view-id="'.$prd->id.'"
+            data-view-customer-id="'.$prd->customer_id.'"
+            data-view-name="'.$prd->name.'"
+            data-view-vehicle-id="'.$prd->vehicle_id.'"
+            data-view-vname="'.$prd->vname.'"
+            data-view-code="'.$prd->code.'" 
+            data-view-total="'.$prd->total.'"
+            data-view-payment="'.$prd->payment.'"
+            data-view-date="'.$prd->date.'"
+            data-view-duedate="'.$prd->datedue.'"
+            data-view-tax="'.$prd->tax.'"
+            data-view-taxppn="'.$prd->taxppn.'"
+            class="btn btn-sm btn-warning pilih-project"
+            data-toggle="modal" data-target="#dataProject" data-dismiss="modal">
+            <i class="fa fa-share fa-sm"></i></button>';
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->produksi_model->count_all(),
+            "recordsFiltered" => $this->produksi_model->count_filtered(),
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+    }
+    public function ajax_project_list(){
+        
+        $list = $this->produksi_model->get_datatables();
+        $data = array();
+        foreach ($list as $prd) {
+            $row = array();
+            $row[] = $kode;
+            $row[] = date('d-M-Y', strtotime($prd->date));
+            $row[] = date('d-M-Y', strtotime($prd->duedate));
+            $row[] = $prd->name;
+            $row[] = $prd->vname;
+            $row[] = number_format($prd->total, 4, ".", ".");
+            $row[] = '';
+            $row[] = '';
+            $row[] = '<button class="btn btn-sm btn-warning" 
+            onclick="showAdd('.$prd->id.'); return false;">
+            <i class="fa fa-money fa-sm"></i></button>';
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->produksi_model->count_all(),
+            "recordsFiltered" => $this->produksi_model->count_filtered(),
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+    }
+    public function projectpayment_add(){
+        $head['title'] = "Project Payment";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $data = array();
+        $id = intval($this->input->get('id'));
+        $ac1 = $this->dmodel->get('accounts', null, ['sub'=> 3]);   
+        foreach ($ac1 as $srv) {
+            $row2 = array();
+            $row2['id'] = $srv['id'];
+            $row2['code'] = $srv['code'];
+            $row2['name'] = $srv['name'];
+            $data['account'][] = $row2;
+        }
+        $ac2 = $this->dmodel->get('accounts', null, ['sub'=> 7]);   
+        foreach ($ac2 as $srv) {
+            $row3 = array();
+            $row3['id'] = $srv['id'];
+            $row3['code'] = $srv['code'];
+            $row3['name'] = $srv['name'];
+            $data['account'][] = $row3;
+        }
+        $produksi = $this->dmodel->get('smartpos_produksi', ['id'=> $id]);
+        $data['id'] = $id;
+        $data['cust'] = $this->dmodel->get('smartpos_customers', ['id'=> $produksi['customer_id']]);
+        $data['produksi'] =$produksi;
+
+        $this->load->view('fixed/header', $head);
+        $this->load->view('finance/projectpayment_add', $data);
+        $this->load->view('fixed/footer');
+    }
+    public function api_projectpaymenttemp(){
+        //tampilkan data sementara
+        
+        $list = $this->produksi_item_payment_model->get_datatables();
+        $data = array();
+        foreach ($list as $prd) {
+            $row = array();
+            $balance = $prd->total - $prd->payment;
+            $row['id'] = $prd->id;
+            $row['project_code'] = $prd->code;
+            $row['project_date'] = date('d-M-Y', strtotime($prd->date));
+          //  $row[] = $prd->name;
+            $row['vehicle_name'] = $prd->vname;
+            $row['taxes'] = $prd->tax;
+            $row['taxes2'] = $prd->taxppn;
+          //  $row[] = date('d-M-Y', strtotime($prd->datedue));
+            $row['total'] = number_format($prd->total, 4, ".", ".");
+            $row['payment'] = number_format($prd->payment, 4, ".", ".");
+            //$row[] = $balance;
+            $data[] = $row;
+        }
+        $output = array(
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+
+    }
+    public function api_projectpaymenttemp_save(){
+        //save data sementara
+        //$POST = [ 'data' => [ 'project_id', 'taxes', 'taxes2'],];
+            
+        if ($_POST == TRUE) {
+            
+          //  $data = $_POST['data'];
+          //  $insert = $this->admin->insert('smartpos_produksi_payment', $data);
+           // if ($insert) {
+                        
+                $iproject_id = $_POST['iproject_id'];
+                $icustomer_id = $_POST['icustomer_id'];
+                $ivehicle_id = $_POST['ivehicle_id'];
+                $itaxes = $_POST['itaxes'];
+                $itaxes2 = $_POST['itaxes2'];
+                $itotal = $_POST['itotal'];
+                $ipayment = $_POST['ipayment'];
+                $ivehicle_id = $_POST['ivehicle_id'];
+
+                $cpt = count($_POST['iproject_id']);
+                for ($i = 0; $i < $cpt; $i++) {
+                    $params['project_id'] = $iproject_id[$i];
+                    $params['vehicle_id'] = $ivehicle_id[$i];
+                    $params['tax'] = $itaxes[$i];
+                    $params['taxppn'] = $itaxes2[$i];
+                    $params['total'] = $itotal[$i];
+                    $params['payment'] = $ipayment[$i];
+                   // $params['pos_description'] = $ivehicle_id[$i];
+
+                    //$this->Pos_model->add($params);
+                    //$input = $this->input->post('data', true);
+                    $insertx = $this->admin->insert('smartpos_produksi_item_payment', $params);
+                    if ($insertx) {
+                                        
+                        $output = array(
+                            "status" => 1,
+                        );
+                        echo json_encode($output);
+                    }
+                }
+           // }
+
+        }
+    }
+    public function api_projectpayment_save(){
+        //ni gmana savenya bro aduh lier aing
+    }
+
+    public function projectpayment_delete(){
+
+    }
+
     public function payment()
     {
+        //code PPRO
         $head['title'] = "Project Payment";
         $head['usernm'] = $this->aauth->get_user()->username;
         
