@@ -2,9 +2,9 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Produksi_item_payment_model extends CI_Model {
+class Produksi_payment_model extends CI_Model {
     
-    var $table = 'smartpos_produksi_item_payment';
+    var $table = 'smartpos_produksi_payment';
     var $column_search = array('name');
     var $column_order = array(null, 'code', 'date', 'total', null);
     //var $column_search = array('code', 'valid', 'amount');
@@ -12,17 +12,17 @@ class Produksi_item_payment_model extends CI_Model {
     
     private function _get_datatables_query() {
 
-        $this->db->select('smartpos_produksi_item_payment.*');
+        $this->db->select('smartpos_produksi_payment.*');
         $this->db->select('x1.name, x1.phone');
         $this->db->select('x2.name as vname');
-        $this->db->join('smartpos_customers x1', 'x1.id = smartpos_produksi_item_payment.customer_id');
-        $this->db->join('smartpos_vehicle x2', 'x2.id = smartpos_produksi_item_payment.vehicle_id');
+        $this->db->join('smartpos_customers x1', 'x1.id = smartpos_produksi_payment.customer_id');
+        $this->db->join('smartpos_vehicle x2', 'x2.id = smartpos_produksi_payment.vehicle_id');
         $this->db->from($this->table);
         $i = 0;
 
         if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
-            $this->db->where('DATE(smartpos_produksi_item_payment.date) >=', datefordatabase($this->input->post('min')));
-            $this->db->where('DATE(smartpos_produksi_item_payment.date) <=', datefordatabase($this->input->post('max')));
+            $this->db->where('DATE(smartpos_produksi_payment.date) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(smartpos_produksi_payment.date) <=', datefordatabase($this->input->post('max')));
         }
         foreach ($this->column_search as $item) { // loop column
             if ($this->input->post('search')['value']) { // if datatable send POST for search
@@ -63,7 +63,7 @@ class Produksi_item_payment_model extends CI_Model {
     }
 
     public function count_all() {
-        $this->db->select('smartpos_produksi_item_payment.id');
+        $this->db->select('smartpos_produksi_payment.id');
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }

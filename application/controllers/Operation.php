@@ -13,6 +13,8 @@ class Operation extends CI_Controller
             exit;
         }
         $this->load->model('accounts_model');
+        $this->load->model('purchase_model');
+        $this->load->model('purchase_payment_model');
         $this->load->model('data_model', 'dmodel');
     }
 
@@ -28,6 +30,47 @@ class Operation extends CI_Controller
         $this->load->view('operation/purchase', $data);
         $this->load->view('fixed/footer');
     }
+    public function posting_purchase(){}
+    public function ajax_purchase_list(){
+
+        $min = $this->input->post('min');
+        $max = $this->input->post('max');
+        $st = $this->input->post('status');   
+        $data = array();    
+        $output = array();
+        
+        $list = $this->purchase_model->get_datatables(0, $min, $max, $st);
+        foreach ($list as $prd) {
+            $total = 0;
+            $row = array();
+            //item
+            $product = $this->purchase_model->purchase_products($prd->id);   
+            foreach ($product as $srv) {
+                $total += $srv['subtotal'];
+            }
+            $row[] = $prd->code;
+            $row[] = dateformat($prd->date);
+            $row[] = dateformat($prd->datedue);
+            $row[] = $prd->name;
+            $row[] = number_format($total, 4, ".", ".");
+            $row[] = number_format($prd->payment, 4, ".", ".");
+            $balance = $total - $prd->payment;
+            //if($balance < 0) $balance = 0;
+            $row[] = number_format($balance, 4, ".", ".");
+            $row[] = $prd->posting == 1 ?'<button class="btn btn-sm bg-gray" disabled=""><i class="fa fa-unlock fa-sm"></i></button>'
+            :'<button class="btn btn-sm bg-danger" disabled=""><i class="fa fa-ban fa-sm"></i></button>';//1:posting 2:unposting
+            
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->purchase_model->count_all(),
+            "recordsFiltered" => $this->purchase_model->count_filtered(),
+            "data" => $data,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
     
     public function purchasepayment()
     {
@@ -41,6 +84,43 @@ class Operation extends CI_Controller
         $this->load->view('operation/purchasepayment', $data);
         $this->load->view('fixed/footer');
     }
+    public function posting_purchase_payment(){
+        //update posting
+
+    }    
+    public function ajax_purchase_payment_list(){
+
+        $min = $this->input->post('min');
+        $max = $this->input->post('max');
+        $st = $this->input->post('status');
+        $data = array();
+        $output = array();
+        
+        $list = $this->purchase_payment_model->get_datatables(0, $min, $max, $st);
+        foreach ($list as $prd) {
+            $row = array();
+            $row[] = $prd->ppcode;
+            $row[] = dateformat($prd->pdate);
+            $row[] = dateformat($prd->pdatedue);
+            $row[] = $prd->name;
+            $row[] = number_format($prd->ptotal, 4, ".", ".");
+            $row[] = number_format($prd->discount, 4, ".", ".");
+            $row[] = number_format($prd->ppayment, 4, ".", ".");
+            $row[] = $prd->posting == 1 ?'<button data-object-id="' . $prd->idp . '" class="btn btn-sm bg-success delete-object"><i class="fa fa-lock fa-sm"></i></button>'
+            :'<button class="btn btn-sm bg-danger" disabled=""><i class="fa fa-ban fa-sm"></i></button>';//1:posting 2:unposting
+            
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->purchase_payment_model->count_all(),
+            "recordsFiltered" => $this->purchase_payment_model->count_filtered(),
+            "data" => $data != null ? $data : [] ,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+
     public function stockin()
     {
         

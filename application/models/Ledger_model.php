@@ -13,9 +13,13 @@ class Ledger_model extends CI_Model {
         if($params['account_id'] != null)
             $this->db->where('account_id', $params['account_id']);
         
-        if($params['min'] != null && $params['max'] != null)
-        $this->db->where('tanggal BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
+        //if($params['min'] != null && $params['max'] != null)
+        //$this->db->where('tanggal BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
 
+        if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
+            $this->db->where('DATE(ledger.tanggal) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(ledger.tanggal) <=', datefordatabase($this->input->post('max')));
+        }
 
         
         $i = 0;

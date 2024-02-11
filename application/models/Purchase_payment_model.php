@@ -51,9 +51,13 @@ class Purchase_payment_model extends CI_Model {
         if($params['status'] != 0) 
             $this->db->where('purchase_payment.status', $params['status']);
 
-        if($params['min'] != 0 && $params['max'] != 0)
-            $this->db->where('purchase_payment.date BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
+        //if($params['min'] != 0 && $params['max'] != 0)
+        //    $this->db->where('purchase_payment.date BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
 
+        if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
+            $this->db->where('DATE(purchase_payment.pdate) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(purchase_payment.pdate) <=', datefordatabase($this->input->post('max')));
+        }
         $i = 0;
         foreach ($this->column_search as $item) { // loop column
             if ($this->input->post('search')['value']) { // if datatable send POST for search
@@ -78,7 +82,7 @@ class Purchase_payment_model extends CI_Model {
         }
     }
 
-    function get_datatables($search, $min, $max, $posting, $paging) {
+    function get_datatables($search, $min, $max, $posting, $paging = 0) {
         $params = array();
         $params['name'] = $search;
         $params['min'] = $min;
@@ -97,9 +101,10 @@ class Purchase_payment_model extends CI_Model {
         return $query->num_rows();
     }
 
+
     public function count_all() {
+        $this->db->select('purchase_payment.idp');
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
-
 }

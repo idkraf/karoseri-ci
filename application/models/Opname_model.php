@@ -19,9 +19,14 @@ class Opname_model extends CI_Model {
         if($params['status'] != 0) 
             $this->db->where('opname.status', $params['status']);
 
-        if($params['min'] != null && $params['max'] != null)
-            $this->db->where('tanggal BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
+       // if($params['min'] != null && $params['max'] != null)
+       //     $this->db->where('tanggal BETWEEN "'. date('Y-m-d', strtotime($params['min'])). '" and "'. date('Y-m-d', strtotime($params['max'])).'"');
 
+        if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
+            $this->db->where('DATE(opname.tanggal) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(opname.tanggal) <=', datefordatabase($this->input->post('max')));
+        }
+            
 
         foreach ($this->column_search as $item) { // loop column
             if ($this->input->post('search')['value']) { // if datatable send POST for search

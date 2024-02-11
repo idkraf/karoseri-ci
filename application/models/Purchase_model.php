@@ -118,10 +118,10 @@ class Purchase_model extends CI_Model {
         } elseif (!BDATA) {
             $this->db->where('purchase.loc', 0);
         }
-        //if ($this->input->post('start_date') && $this->input->post('end_date')) { // if datatable send POST for search
-        //    $this->db->where('DATE(purchase.invoicedate) >=', datefordatabase($this->input->post('start_date')));
-        //    $this->db->where('DATE(purchase.invoicedate) <=', datefordatabase($this->input->post('end_date')));
-        //}
+        if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
+            $this->db->where('DATE(purchase.date) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(purchase.date) <=', datefordatabase($this->input->post('max')));
+        }
         
         if($params['id'] != 0) 
             $this->db->where('purchase.id', $params['id']);
