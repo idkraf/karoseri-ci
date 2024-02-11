@@ -81,17 +81,17 @@ $(document).ready(function () {
                     _html+= '<th class="th-code" style="width: 115px">Code</th>';
                     _html+= '<th class="th-date"style="width: 75px">Tanggal</th>';
                     _html+= '<th>Supplier</th>';
-                    _html+= '<th class="th-action2" style="width: 65px">&nbsp;</th>';
+                    _html+= '<th class="th-action2" style="width: 75px">&nbsp;</th>';
                     _html+= '</tr>';
                     $('#stokin').append(_html);
                     
                     _del = ''; if(_arr.status == "canceled") _del = ' class="bg-warning"';
                     _html = '<tr' + _del + '>';
-                    _html+= '<td>' + _arr.code + '</td>';
-                    _html+= '<td>' + _arr.code2 + '</td>';
-                    _html+= '<td>' + _arr.date + '</td>';
-                    _html+= '<td>' + _arr.supplier_name + '</td>';
-                    _html+= '<td class="small">';
+                    _html+= '<td class="p-1">' + _arr.code + '</td>';
+                    _html+= '<td class="p-1">' + _arr.code2 + '</td>';
+                    _html+= '<td class="p-1">' + _arr.date + '</td>';
+                    _html+= '<td class="p-1">' + _arr.supplier_name + '</td>';
+                    _html+= '<td class="small p-1">';
                     if(_arr.status == 2){
                         _html+= '<button class="btn btn-sm btn-danger" disabled>';
                         _html+= '<i class="fa fa-ban fa-sm"></i>';
@@ -101,10 +101,10 @@ $(document).ready(function () {
                         _html+= '<i class="fa fa-check fa-sm"></i>';
                         _html+= '</button>';
                     }else{
-                        _html+= '<button class="btn btn-sm btn-warning" onclick="showEdit(\'' + _arr.id + '\'); return false;">';
-                        _html+= '<i class="fa fa-pencil-alt fa-sm"></i>';
+                        _html+= '<button class="btn btn-sm btn-warning" style="background-color:#ffcd39!important" onclick="showEdit(\'' + _arr.id + '\'); return false;">';
+                        _html+= '<i class="fa fa-edit fa-sm"></i>';
                         _html+= '</button>';
-                        _html+= '<button class="btn btn-sm btn-danger ml-2" onclick="showDelete(\'' + _arr.id + '\'); return false;">';
+                        _html+= '<button class="btn btn-sm btn-danger ms-2" style="background-color:#b02a37!important" onclick="showDelete(\'' + _arr.id + '\'); return false;">';
                         _html+= '<i class="fa fa-minus fa-sm"></i>';
                         _html+= '</button>';
                     }
@@ -113,7 +113,7 @@ $(document).ready(function () {
                     $('#stokin').append(_html);
                     
                     _html = '<tr' + _del + '>';
-                    _html+= '<td colspan="4">';
+                    _html+= '<td colspan="4" class="p-0">';
                     _html+= '<div class="table-responsive">';
                     _html+= '<table class="table bg-white table-bordered text-nowrap">';
                     _html+= '<tr class="bg-gray-light">';

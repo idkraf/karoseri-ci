@@ -18,7 +18,10 @@ class Stock_model extends CI_Model {
         if($params != null){
             $this->db->where($params);
         }
-
+        if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
+            $this->db->where('DATE(opname.tanggal) >=', datefordatabase($this->input->post('min')));
+            $this->db->where('DATE(opname.tanggal) <=', datefordatabase($this->input->post('max')));
+        }
         foreach ($this->column_search as $item) { // loop column
             if ($this->input->post('search')['value']) { // if datatable send POST for search
                 if ($i === 0) { // first loop

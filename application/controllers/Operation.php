@@ -133,6 +133,36 @@ class Operation extends CI_Controller
         $this->load->view('operation/stockin', $data);
         $this->load->view('fixed/footer');
     }
+    public function posting_stockin(){
+        //update posting = 2 from tabel purchase
+    }
+    public function ajax_list_stockin() {
+
+        $list = $this->purchase_model->get_datatables();    
+        $data = array();    
+        $output = array();
+        foreach ($list as $prd) {
+            $row = array();            
+            //status
+            $row[] = $prd->code;
+            $row[] = $prd->code2 !=null ? $prd->code2 : '';
+            $row[] = dateformat($prd->date);
+            $row[] = $prd->name;
+            $row[] = $prd->posting == 1 ?'<button data-object-id="' . $prd->id . '" class="btn btn-sm bg-success delete-object"><i class="fa fa-lock fa-sm"></i></button>'
+            :'<button class="btn btn-sm bg-dark text-white" disabled=""><i class="fa fa-unlock fa-sm"></i></button>';//1:posting 2:unposting
+            
+            
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->purchase_model->count_all(),
+            "recordsFiltered" => $this->purchase_model->count_filtered(),
+            "data" => $data,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
     public function return()
     {
         

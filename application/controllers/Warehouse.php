@@ -14,6 +14,8 @@ class Warehouse extends CI_Controller
         }
         $this->load->model('warehouse_model');
         $this->load->model('data_model', 'dmodel');
+        $this->load->model('purchase_model');
+        $this->load->model('purchase_item_model');
         $this->load->model('opname_model');
         $this->load->model('stock_model');
         $this->load->model('products_model');
@@ -91,6 +93,45 @@ class Warehouse extends CI_Controller
     }
 
     public function ajax_list_stockin() {
+
+        $list = $this->purchase_model->get_datatables();    
+        $data = array();    
+        $output = array();
+        foreach ($list as $prd) {
+            $row = array();
+            
+            //status
+            $row['id'] = $prd->id;
+            $row['status'] = $prd->status;
+            $row['posting'] = $prd->posting;//1: selesai, 2: belum selesai maka muncul edit
+            $row['code2'] = $prd->code2 !=null ? $prd->code2 : '';
+            $row['code'] = $prd->code;//'<a href="' . base_url("stockreturn/view?id=$prd->id") . '"><strong>&nbsp; ' . $prd->tid . '</strong></a>';
+            $row['date'] = dateformat($prd->date);
+            $row['supplier_name'] = $prd->name;
+            
+            //item  
+            $product_list = $this->purchase_item_model->purchase_products($prd->id);      
+            foreach ($product_list as $srv) {
+                $row2 = array();
+                $row2['item_code'] = $srv['product_code'];
+                $row2['item_name'] = $srv['product_name'];
+                $row2['size'] = $srv['size'];//$srv['size'];//size ini ngga jelas
+                $row2['big'] = $srv['big'];//qty purchase
+                $row2['rcvbig'] = $srv['rcvbig'];//qty masuk
+                $row['detail'][] = $row2;
+            }
+            $data[] = $row;
+        }
+        $output = array(
+            "pages" => $this->purchase_model->count_all(),
+            "rows" => $this->purchase_model->count_filtered(),
+            "data" => $data,
+            'status' => true,
+        );
+
+        echo json_encode($output);
+    }
+    public function ajax_list_stockin_() {
         $min = $this->input->get('min');
         $max = $this->input->get('max');
         $st = $this->input->get('status');       
