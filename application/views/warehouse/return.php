@@ -6,7 +6,7 @@
 
             <div class="message"></div>
         </div> 
-        <table id="stokout" class="table table-striped table-bordered zero-configuration table-sm ">
+        <table id="return" class="table table-striped table-bordered zero-configuration table-sm ">
         </table>
     </div>
 </div>

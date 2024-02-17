@@ -35,7 +35,8 @@ class Warehouse extends CI_Controller
         $this->load->view('warehouse/purchase');
         $this->load->view('fixed/footer');
     }
-    public function ajax_list_purchase() {
+
+    public function ajax_item() {
         $list = $this->produksi_item_model->get_datatables();
         $data = array();
         foreach ($list as $prd) {
@@ -79,6 +80,34 @@ class Warehouse extends CI_Controller
             "data" => $data,
         );
         //output to json format
+        echo json_encode($output);
+    }
+    public function ajax_list_purchase() {
+        $list = $this->purchase_item_model->get_datatables();    
+        $data = array();    
+        $output = array();
+        foreach ($list as $prd) {
+            $row = array();
+            
+            //status
+            $row[] = $prd->code;
+            $row[] = $prd->date;
+            $row[] = $prd->name;            
+            $row[] = $prd->product_code;
+            $row[] = $prd->product_name;
+            $row[] = $prd->size;
+            $row[] = $prd->rcvbig;
+            $row[] = $prd->size - $prd->rcvbig;
+            $row[] = '<a href="' . base_url("receive_add?id=$prd->id") . '" 
+            class="text-black rounded-0 btn btn-warning" style="text-decoration: none"><span class="fa fa-truck"></span></a>';
+            $data[] = $row;
+        }
+        $output = array(
+            "recordsTotal" => $this->purchase_item_model->count_all(),
+            "recordsFiltered" => $this->purchase_item_model->count_filtered(),
+            "data" => $data
+        );
+
         echo json_encode($output);
     }
     
@@ -131,6 +160,7 @@ class Warehouse extends CI_Controller
 
         echo json_encode($output);
     }
+
     public function ajax_list_stockin_() {
         $min = $this->input->get('min');
         $max = $this->input->get('max');

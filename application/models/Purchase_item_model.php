@@ -12,17 +12,20 @@ class Purchase_item_model extends CI_Model {
 
         $this->db->select('purchase_item.*');
         $this->db->select('x1.product_name, x1.product_code');
+        $this->db->select('x2.code, x2.date');
+        $this->db->select('x3.name');
 
         $this->db->join('smartpos_products x1', 'x1.pid = purchase_item.product_id');
+        $this->db->join('purchase x2', 'x2.id = purchase_item.tid');
+        $this->db->join('smartpos_supplier x3', 'x3.id = x2.supplier_id', 'left');
 
         $this->db->from($this->table);
         $i = 0;
        // if($params!=null) $this->db->where('tid',$params);
         
-        //if ($this->input->post('min') && $this->input->post('max')) { // if datatable send POST for search
-        //    $this->db->where('DATE(purchase_item.created_at) >=', datefordatabase($this->input->post('min')));
-        //    $this->db->where('DATE(purchase_item.created_at) <=', datefordatabase($this->input->post('max')));
-        //}
+        if ($this->input->post('status')) {
+            $this->db->where('purchase_item.indent >', '1');
+        }
         
 
         foreach ($this->column_search as $item) { // loop column
