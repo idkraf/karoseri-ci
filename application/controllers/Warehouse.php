@@ -23,6 +23,7 @@ class Warehouse extends CI_Controller
         $this->load->model('produksi_model');
         $this->load->model('produksi_item_model');
         $this->load->model('stockout_model');
+        $this->load->model('products_model', 'products');
     }
 
     
@@ -88,7 +89,6 @@ class Warehouse extends CI_Controller
         $output = array();
         foreach ($list as $prd) {
             $row = array();
-            
             //status
             $row[] = $prd->code;
             $row[] = $prd->date;
@@ -98,7 +98,7 @@ class Warehouse extends CI_Controller
             $row[] = $prd->size;
             $row[] = $prd->rcvbig;
             $row[] = $prd->size - $prd->rcvbig;
-            $row[] = '<a href="' . base_url("receive_add?id=$prd->id") . '" 
+            $row[] = '<a href="' . base_url("warehouse/receive_add?id=$prd->id") . '" 
             class="text-black rounded-0 btn btn-warning" style="text-decoration: none"><span class="fa fa-truck"></span></a>';
             $data[] = $row;
         }
@@ -109,6 +109,55 @@ class Warehouse extends CI_Controller
         );
 
         echo json_encode($output);
+    }
+    public function purchase_product_list(){
+        
+        $list = $this->purchase_item_model->get_datatables();
+        $data = array();
+        foreach ($list as $prd) {
+            $row = array();
+            $row[] = $prd->product_code;
+            $row[] = $prd->title;
+            $row[] = $prd->product_name; 
+            $row[] = $prd->size; 
+            $row[] = $prd->big;
+            $row[] = $prd->rcvbig;
+            $row[] = $prd->indent;
+            $row[] = '<a
+            data-view-id="' . $prd->product_id . '" 
+            data-view-code="' . $prd->product_code . '" 
+            data-view-iname="' . $prd->product_name . '" 
+            data-view-cname="' . $prd->title . '" 
+            data-view-size="' . $prd->size . '" 
+            data-view-purchase="' . $prd->big . '" 
+            data-view-stockin="' . $prd->rcvbig . '" 
+            data-view-indent="' . $prd->indent . '" 
+            class="btn btn-success btn-sm pilih-produk"
+            data-toggle="modal" data-target="#dataProduk" data-dismiss="modal">
+            <span class="icon-share-alt"></span></a>';
+            $data[] = $row;
+        }
+        $output = array(
+            "draw" => $this->input->post('draw'),
+            "recordsTotal" => $this->purchase_item_model->count_all(),
+            "recordsFiltered" => $this->purchase_item_model->count_filtered(),
+            "data" => $data,
+        );
+
+        echo json_encode($output);
+    }
+    public function receive_add(){
+        $head['title'] = "Stock In";
+        $head['usernm'] = $this->aauth->get_user()->username;
+
+        $data['id'] = $this->input->get('id');
+        //$purchase = $this->dmodel->get('purchase', ['id'=> $this->input->get('id')]);
+        $data['purchase'] = $this->purchase_model->purchase_details( $this->input->get('id'));
+        
+        
+        $this->load->view('fixed/header', $head);
+        $this->load->view('warehouse/receive_add', $data);
+        $this->load->view('fixed/footer');
     }
     
     public function stockin()

@@ -14,10 +14,12 @@ class Purchase_item_model extends CI_Model {
         $this->db->select('x1.product_name, x1.product_code');
         $this->db->select('x2.code, x2.date');
         $this->db->select('x3.name');
+        $this->db->select('x4.title');
 
         $this->db->join('smartpos_products x1', 'x1.pid = purchase_item.product_id');
         $this->db->join('purchase x2', 'x2.id = purchase_item.tid');
         $this->db->join('smartpos_supplier x3', 'x3.id = x2.supplier_id', 'left');
+        $this->db->join('smartpos_product_cat x4', 'x4.id = x1.pcat', 'left');
 
         $this->db->from($this->table);
         $i = 0;
@@ -27,7 +29,9 @@ class Purchase_item_model extends CI_Model {
             $this->db->where('purchase_item.indent >', '1');
         }
         
-
+        if ($this->input->post('tid')) {
+            $this->db->where('purchase_item.tid', $this->input->post('tid'));
+        }
         foreach ($this->column_search as $item) { // loop column
             if ($this->input->post('search')['value']) { // if datatable send POST for search
                 if ($i === 0) { // first loop
